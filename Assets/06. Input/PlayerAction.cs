@@ -34,7 +34,7 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": true
+                    ""initialStateCheck"": false
                 },
                 {
                     ""name"": ""StopInput"",
@@ -43,7 +43,7 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": true
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -66,6 +66,34 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""PC"",
                     ""action"": ""StopInput"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""UI"",
+            ""id"": ""b8c9ade1-cbb6-4a5a-b585-b9dbb018acc9"",
+            ""actions"": [
+                {
+                    ""name"": ""ClickInput"",
+                    ""type"": ""Button"",
+                    ""id"": ""5b67379c-40c3-4a57-aa24-a1d2cc407c96"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""14a56bbe-1e58-4f4a-9a49-d81862f0f4a4"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""PC"",
+                    ""action"": ""ClickInput"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -106,6 +134,9 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_GrapInput = m_Player.FindAction("GrapInput", throwIfNotFound: true);
         m_Player_StopInput = m_Player.FindAction("StopInput", throwIfNotFound: true);
+        // UI
+        m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
+        m_UI_ClickInput = m_UI.FindAction("ClickInput", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -217,6 +248,52 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
+
+    // UI
+    private readonly InputActionMap m_UI;
+    private List<IUIActions> m_UIActionsCallbackInterfaces = new List<IUIActions>();
+    private readonly InputAction m_UI_ClickInput;
+    public struct UIActions
+    {
+        private @PlayerAction m_Wrapper;
+        public UIActions(@PlayerAction wrapper) { m_Wrapper = wrapper; }
+        public InputAction @ClickInput => m_Wrapper.m_UI_ClickInput;
+        public InputActionMap Get() { return m_Wrapper.m_UI; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(UIActions set) { return set.Get(); }
+        public void AddCallbacks(IUIActions instance)
+        {
+            if (instance == null || m_Wrapper.m_UIActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_UIActionsCallbackInterfaces.Add(instance);
+            @ClickInput.started += instance.OnClickInput;
+            @ClickInput.performed += instance.OnClickInput;
+            @ClickInput.canceled += instance.OnClickInput;
+        }
+
+        private void UnregisterCallbacks(IUIActions instance)
+        {
+            @ClickInput.started -= instance.OnClickInput;
+            @ClickInput.performed -= instance.OnClickInput;
+            @ClickInput.canceled -= instance.OnClickInput;
+        }
+
+        public void RemoveCallbacks(IUIActions instance)
+        {
+            if (m_Wrapper.m_UIActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IUIActions instance)
+        {
+            foreach (var item in m_Wrapper.m_UIActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_UIActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public UIActions @UI => new UIActions(this);
     private int m_PCSchemeIndex = -1;
     public InputControlScheme PCScheme
     {
@@ -239,5 +316,9 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
     {
         void OnGrapInput(InputAction.CallbackContext context);
         void OnStopInput(InputAction.CallbackContext context);
+    }
+    public interface IUIActions
+    {
+        void OnClickInput(InputAction.CallbackContext context);
     }
 }

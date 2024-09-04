@@ -7,6 +7,7 @@ public class FeedbackPlayer : MonoBehaviour
 
     private List<Feedback> _feedbackToPlay = null;
     public List<Feedback> FeedbackToPlay => _feedbackToPlay;
+
     private void Awake()
     {
         SetUpEffect();

@@ -1,5 +1,5 @@
 {
-    "name": "PlayerActions",
+    "name": "PlayerAction",
     "maps": [
         {
             "name": "Player",
@@ -12,7 +12,7 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
                 },
                 {
                     "name": "StopInput",
@@ -21,7 +21,7 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -44,6 +44,34 @@
                     "processors": "",
                     "groups": "PC",
                     "action": "StopInput",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "UI",
+            "id": "b8c9ade1-cbb6-4a5a-b585-b9dbb018acc9",
+            "actions": [
+                {
+                    "name": "ClickInput",
+                    "type": "Button",
+                    "id": "5b67379c-40c3-4a57-aa24-a1d2cc407c96",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "14a56bbe-1e58-4f4a-9a49-d81862f0f4a4",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "PC",
+                    "action": "ClickInput",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
