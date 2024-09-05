@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NetworkGrapObject : ExpansionNetworkBehaviour
+public class NetworkGrabObject : ExpansionNetworkBehaviour
 {
     
 }

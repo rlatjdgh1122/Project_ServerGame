@@ -1,14 +1,12 @@
 using Define;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEngine;
+
+public delegate void InputParams(INPUT_KEY_STATE key, params object[] args);
 
 public interface IInputHandler<T> where T : Enum
 {
-    public void OnRegisterEvent(T key, Action<INPUT_KEY_STATE> action);
-    public void RemoveRegisterEvent(T key, Action<INPUT_KEY_STATE> action);
+    public void OnRegisterEvent(T key, InputParams action);
+    public void RemoveRegisterEvent(T key, InputParams action);
 }
 
 public interface IPlayerInput : IInputHandler<HASH_INPUT_PLAYER>, PlayerAction.IPlayerActions

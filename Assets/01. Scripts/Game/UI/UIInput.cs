@@ -7,11 +7,11 @@ using UnityEngine.InputSystem;
 
 public class UIInput : ExpansionMonoBehaviour, IUIInput, ISetupHandler
 {
-
-    private Dictionary<HASH_INPUT_UI, Action<INPUT_KEY_STATE>> _inputEventDic = new();
+    private InputMachine<HASH_INPUT_UI> _inputMachine = null;
 
     public void Setup(ComponentList list)
     {
+        InputManager.CreateMachine(out _inputMachine);
         InputSetting();
     }
 
@@ -20,12 +20,12 @@ public class UIInput : ExpansionMonoBehaviour, IUIInput, ISetupHandler
         InputManager.Input.UI.SetCallbacks(this);
     }
 
-    public void OnRegisterEvent(HASH_INPUT_UI key, Action<INPUT_KEY_STATE> action)
+    public void OnRegisterEvent(HASH_INPUT_UI key, InputParams action)
     {
         
     }
 
-    public void RemoveRegisterEvent(HASH_INPUT_UI key, Action<INPUT_KEY_STATE> action)
+    public void RemoveRegisterEvent(HASH_INPUT_UI key, InputParams action)
     {
         
     }

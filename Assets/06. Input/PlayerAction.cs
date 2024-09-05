@@ -28,7 +28,7 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
             ""id"": ""4f5a0777-a20f-485b-903a-268e6c78850b"",
             ""actions"": [
                 {
-                    ""name"": ""GrapInput"",
+                    ""name"": ""LeftClickInput"",
                     ""type"": ""Button"",
                     ""id"": ""d16828d3-fe38-4bb1-87be-2749b526d9fb"",
                     ""expectedControlType"": ""Button"",
@@ -37,7 +37,7 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""StopInput"",
+                    ""name"": ""SpaceClickInput"",
                     ""type"": ""Button"",
                     ""id"": ""690b7a5e-a4c3-4ce0-b354-b97342a84aa8"",
                     ""expectedControlType"": ""Button"",
@@ -54,7 +54,7 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""PC"",
-                    ""action"": ""GrapInput"",
+                    ""action"": ""LeftClickInput"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -65,7 +65,7 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""PC"",
-                    ""action"": ""StopInput"",
+                    ""action"": ""SpaceClickInput"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -132,8 +132,8 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
 }");
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
-        m_Player_GrapInput = m_Player.FindAction("GrapInput", throwIfNotFound: true);
-        m_Player_StopInput = m_Player.FindAction("StopInput", throwIfNotFound: true);
+        m_Player_LeftClickInput = m_Player.FindAction("LeftClickInput", throwIfNotFound: true);
+        m_Player_SpaceClickInput = m_Player.FindAction("SpaceClickInput", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_ClickInput = m_UI.FindAction("ClickInput", throwIfNotFound: true);
@@ -198,14 +198,14 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
     // Player
     private readonly InputActionMap m_Player;
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
-    private readonly InputAction m_Player_GrapInput;
-    private readonly InputAction m_Player_StopInput;
+    private readonly InputAction m_Player_LeftClickInput;
+    private readonly InputAction m_Player_SpaceClickInput;
     public struct PlayerActions
     {
         private @PlayerAction m_Wrapper;
         public PlayerActions(@PlayerAction wrapper) { m_Wrapper = wrapper; }
-        public InputAction @GrapInput => m_Wrapper.m_Player_GrapInput;
-        public InputAction @StopInput => m_Wrapper.m_Player_StopInput;
+        public InputAction @LeftClickInput => m_Wrapper.m_Player_LeftClickInput;
+        public InputAction @SpaceClickInput => m_Wrapper.m_Player_SpaceClickInput;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -215,22 +215,22 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_PlayerActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_PlayerActionsCallbackInterfaces.Add(instance);
-            @GrapInput.started += instance.OnGrapInput;
-            @GrapInput.performed += instance.OnGrapInput;
-            @GrapInput.canceled += instance.OnGrapInput;
-            @StopInput.started += instance.OnStopInput;
-            @StopInput.performed += instance.OnStopInput;
-            @StopInput.canceled += instance.OnStopInput;
+            @LeftClickInput.started += instance.OnLeftClickInput;
+            @LeftClickInput.performed += instance.OnLeftClickInput;
+            @LeftClickInput.canceled += instance.OnLeftClickInput;
+            @SpaceClickInput.started += instance.OnSpaceClickInput;
+            @SpaceClickInput.performed += instance.OnSpaceClickInput;
+            @SpaceClickInput.canceled += instance.OnSpaceClickInput;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
         {
-            @GrapInput.started -= instance.OnGrapInput;
-            @GrapInput.performed -= instance.OnGrapInput;
-            @GrapInput.canceled -= instance.OnGrapInput;
-            @StopInput.started -= instance.OnStopInput;
-            @StopInput.performed -= instance.OnStopInput;
-            @StopInput.canceled -= instance.OnStopInput;
+            @LeftClickInput.started -= instance.OnLeftClickInput;
+            @LeftClickInput.performed -= instance.OnLeftClickInput;
+            @LeftClickInput.canceled -= instance.OnLeftClickInput;
+            @SpaceClickInput.started -= instance.OnSpaceClickInput;
+            @SpaceClickInput.performed -= instance.OnSpaceClickInput;
+            @SpaceClickInput.canceled -= instance.OnSpaceClickInput;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -314,8 +314,8 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
     }
     public interface IPlayerActions
     {
-        void OnGrapInput(InputAction.CallbackContext context);
-        void OnStopInput(InputAction.CallbackContext context);
+        void OnLeftClickInput(InputAction.CallbackContext context);
+        void OnSpaceClickInput(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

@@ -1,3 +1,5 @@
+using System;
+
 public static class InputManager
 {
     public enum InputType
@@ -31,5 +33,10 @@ public static class InputManager
 
                 break;
         }
+    }
+
+    public static void CreateMachine<T>(out InputMachine<T> inputMachine) where T : Enum
+    {
+        inputMachine = new();
     }
 }

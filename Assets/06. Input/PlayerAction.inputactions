@@ -6,7 +6,7 @@
             "id": "4f5a0777-a20f-485b-903a-268e6c78850b",
             "actions": [
                 {
-                    "name": "GrapInput",
+                    "name": "LeftClickInput",
                     "type": "Button",
                     "id": "d16828d3-fe38-4bb1-87be-2749b526d9fb",
                     "expectedControlType": "Button",
@@ -15,7 +15,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "StopInput",
+                    "name": "SpaceClickInput",
                     "type": "Button",
                     "id": "690b7a5e-a4c3-4ce0-b354-b97342a84aa8",
                     "expectedControlType": "Button",
@@ -32,7 +32,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "PC",
-                    "action": "GrapInput",
+                    "action": "LeftClickInput",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -43,7 +43,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "PC",
-                    "action": "StopInput",
+                    "action": "SpaceClickInput",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

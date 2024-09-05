@@ -6,15 +6,16 @@ namespace Define
 {
     public enum INPUT_KEY_STATE : sbyte
     {
-        NOT_PUSHING = -128,
+        NOT_PRESSED = -128,
         DOWN,
-        PUSHING,
+        PRESSING,
         UP,
     }
 
     public enum HASH_INPUT_PLAYER : sbyte
     {
         LeftClick = -128,
+        Space
     }
 
     public enum HASH_INPUT_UI : sbyte
