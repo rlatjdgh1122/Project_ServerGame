@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : ExpansionMonoBehaviour, IMoveHandler
@@ -10,7 +8,7 @@ public class PlayerMovement : ExpansionMonoBehaviour, IMoveHandler
 
     private Vector2 _dir = Vector2.zero;
     private float _power = 0f;
-
+       
     public void SetDirection(Vector2 dir)
     {
         _dir = dir;

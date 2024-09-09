@@ -1,5 +1,3 @@
-using System;
-
 namespace Seongho.InputSystem
 {
     public interface IInputHandler<T> 
@@ -7,6 +5,7 @@ namespace Seongho.InputSystem
         public void OnRegisterEvent(T key, InputParams action);
         public void RemoveRegisterEvent(T key, InputParams action);
     }
+
     public interface IPlayerInput : IInputHandler<HASH_INPUT_PLAYER>, PlayerAction.IPlayerActions
     {
         public void InputSetting();

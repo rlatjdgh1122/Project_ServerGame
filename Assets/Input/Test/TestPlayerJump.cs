@@ -12,46 +12,35 @@ namespace Seongho.InputSystem
 
         private void Awake()
         {
-            _input = GetComponent<TestPlayerInput>();
+            _input = GetComponent<IInputHandler<HASH_INPUT_PLAYER>>();
             _rb = GetComponent<Rigidbody2D>();
         }
 
+        /// <summary>
+        /// 이벤트를 연결해줍니다.
+        /// </summary>
         private void Start()
         {
             _input.OnRegisterEvent(HASH_INPUT_PLAYER.Space, OnJump);
-            _input.OnRegisterEvent(HASH_INPUT_PLAYER.LeftClick, OnClick);
         }
 
+        /// <summary>
+        /// 이벤트를 해체해줍니다.
+        /// </summary>
         private void OnDestroy()
         {
             _input.RemoveRegisterEvent(HASH_INPUT_PLAYER.Space, OnJump);
-            _input.RemoveRegisterEvent(HASH_INPUT_PLAYER.LeftClick, OnClick);
         }
 
         private void OnJump(INPUT_KEY_STATE key, object[] args)
         {
+            //눌렸을 경우
             if (key == INPUT_KEY_STATE.DOWN)
             {
+                //위로 힘을 가해 점프 구현
                 _rb.AddForce(Vector2.up * JumpPower, ForceMode2D.Impulse);
             }
         }
-
-        private void OnClick(INPUT_KEY_STATE key, object[] args)
-        {
-            if (key == INPUT_KEY_STATE.DOWN)
-            {
-                Debug.Log("클릭됨");
-            }
-            else if (key == INPUT_KEY_STATE.PRESSING)
-            {
-                Debug.Log("클릭 중");
-            }
-            else if (key == INPUT_KEY_STATE.UP)
-            {
-                Debug.Log("클릭 중지");
-            }
-        }
-
 
     }
 }

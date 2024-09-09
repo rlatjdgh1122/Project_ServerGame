@@ -3,8 +3,6 @@ using UnityEngine.InputSystem;
 
 namespace Seongho.InputSystem
 {
-
-
     public class TestPlayerInput : MonoBehaviour, IPlayerInput
     {
 
@@ -66,5 +64,4 @@ namespace Seongho.InputSystem
             _inputContainer.InputRunning(HASH_INPUT_PLAYER.Space, context, false);
         }
     }
-
 }

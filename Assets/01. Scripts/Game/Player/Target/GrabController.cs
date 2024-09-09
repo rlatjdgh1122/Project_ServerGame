@@ -1,17 +1,27 @@
 using Define;
 using Seongho.InputSystem;
 
-public class GrabController : ExpansionMonoBehaviour, ISetupHandler
+public class GrabController : ExpansionMonoBehaviour, ISetupHandler, IPlayerStopHandler
 {
-
     private IInputHandler<HASH_INPUT_PLAYER> _inputHandler = null;
     private IGrabHandler _grabHandler = null;
+
     public void Setup(ComponentList list)
     {
         _inputHandler = list.Find<IInputHandler<HASH_INPUT_PLAYER>>();
         _grabHandler = list.Find<IGrabHandler>();
 
+        OnRegister();
+    }
+
+    private void OnRegister()
+    {
         _inputHandler.OnRegisterEvent(HASH_INPUT_PLAYER.LeftClick, FindTarget);
+    }
+
+    private void RemoveRegister()
+    {
+        _inputHandler.RemoveRegisterEvent(HASH_INPUT_PLAYER.LeftClick, FindTarget);
     }
 
     private void FindTarget(INPUT_KEY_STATE key, object[] args)
@@ -30,13 +40,19 @@ public class GrabController : ExpansionMonoBehaviour, ISetupHandler
         }
     }
 
+    public void OnPlayerStart()
+    {
+        
+    }
+
+    public void OnPlayerStop()
+    {
+        _grabHandler.GrabStop();
+    }
 
     private void OnDestroy()
     {
-        if (_inputHandler != null)
-        {
-            _inputHandler.RemoveRegisterEvent(HASH_INPUT_PLAYER.LeftClick, FindTarget);
-        }
+        RemoveRegister();
     }
-
+   
 }

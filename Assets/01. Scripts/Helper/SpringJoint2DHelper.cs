@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(SpringJoint2D))]
-public class SpringJoint2DHelper : ExpansionMonoBehaviour, ISpringJoint2DHandler, ISetupHandler
+public class SpringJoint2DHelper : ExpansionMonoBehaviour, ISpringJoint2DHandler, ISetupHandler, IPlayerStopHandler
 {
     private SpringJoint2D _joint = null;
 
@@ -15,6 +15,15 @@ public class SpringJoint2DHelper : ExpansionMonoBehaviour, ISpringJoint2DHandler
     private void Start()
     {
         SetEnable(false);
+    }
+    public void OnPlayerStart()
+    {
+        
+    }
+
+    public void OnPlayerStop()
+    {
+        
     }
 
     public void SetTarget(Rigidbody2D target)
@@ -33,8 +42,11 @@ public class SpringJoint2DHelper : ExpansionMonoBehaviour, ISpringJoint2DHandler
     {
         SetEnable(false);
     }
+
     private void SetEnable(bool value)
     {
         _joint.enabled = value;
     }
+
+  
 }

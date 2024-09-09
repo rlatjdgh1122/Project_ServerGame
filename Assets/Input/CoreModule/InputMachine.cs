@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 namespace Seongho.InputSystem
 {
     public class InputMachine<T> : IInputHandler<T> where T : Enum
-    { 
+    {
         private Dictionary<T, InputParams> _inputEventDic = new();                        //Enum타입을 통해 이벤트를 저장
         private Dictionary<T, INPUT_KEY_STATE> _inputStateDic = new();                    //Enum타입을 통해 키의상태 연결 
         private Dictionary<T, Coroutine> _inputCoroutineDic = new();                      //Enum타입을 통해   코루틴 연결 
@@ -35,6 +35,9 @@ namespace Seongho.InputSystem
             {
 
                 _inputEventDic.Add(key, action);
+
+                //처음엔 NOT_PRESSED상태로 초기화
+                _inputStateDic.Add(key, INPUT_KEY_STATE.NOT_PRESSED);
             }
             else
             {
@@ -42,8 +45,6 @@ namespace Seongho.InputSystem
                 _inputEventDic[key] += action;
             }
 
-            //처음엔 NOT_PRESSED상태로 초기화
-            _inputStateDic.Add(key, INPUT_KEY_STATE.NOT_PRESSED);
         }
 
         /// <summary>
@@ -57,14 +58,14 @@ namespace Seongho.InputSystem
             if (_inputEventDic[key] == null)
             {
                 _inputEventDic.Remove(key);
+                _inputStateDic.Remove(key);
+                _inputCoroutineDic.Remove(key);
             }
             else
             {
                 _inputEventDic[key] -= action;
             }
 
-            _inputStateDic.Remove(key);
-            _inputCoroutineDic.Remove(key);
         }
 
         /// <summary>
@@ -85,7 +86,7 @@ namespace Seongho.InputSystem
 
                 if (useHolding) //누르고 있는지를 체크한다면
                 {
-                    //CallWaitForActionUntilTrue를 사용하여 키의상태가 Up이 될때까지 PRESSING상태로 넘겨줍니다.
+                    //CallWaitForStopCorouine을 사용하여 키의상태가 Up이 될때까지 PRESSING상태로 넘겨줍니다.
                     //코루틴을 반환하여 저장합니다.
                     Coroutine corou = CoroutineUtil.CallWaitForStopCorouine(
                             () =>
