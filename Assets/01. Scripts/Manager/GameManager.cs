@@ -1,10 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
+using Seongho.InputSystem;
 using UnityEngine;
 
 public class GameManager : MonoSingleton<GameManager>
 {
-    [SerializeField] private InputManager.InputType _initInputType = InputManager.InputType.Player;
+    [SerializeField] private INPUT_TYPE _initInputType = INPUT_TYPE.Player;
 
     public void Awake()
     {
@@ -15,12 +14,12 @@ public class GameManager : MonoSingleton<GameManager>
     {
         if (Input.GetKeyDown(KeyCode.K))
         {
-            InputManager.ChangedInputType(InputManager.InputType.UI);
+            InputManager.ChangedInputType(INPUT_TYPE.UI);
         }
 
         if (Input.GetKeyDown(KeyCode.L))
         {
-            InputManager.ChangedInputType(InputManager.InputType.Player);
+            InputManager.ChangedInputType(INPUT_TYPE.Player);
         }
     }
 }

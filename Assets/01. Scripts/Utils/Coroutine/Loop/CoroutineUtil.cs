@@ -1,56 +1,10 @@
+
 using System;
 using System.Collections;
 using UnityEngine;
 
-public static class CoroutineUtil
+public static partial class CoroutineUtil
 {
-    private static GameObject _coroutineObj;
-    private static CoroutineExecutor _coroutineExecutor;
-
-    static CoroutineUtil()
-    {
-        CreateCoroutineExecutor();
-    }
-
-    private static void CreateCoroutineExecutor()
-    {
-        if (_coroutineObj != null)
-        {
-            UnityEngine.Object.Destroy(_coroutineObj);
-        }
-
-        _coroutineObj = new GameObject("CoroutineObj");
-        UnityEngine.Object.DontDestroyOnLoad(_coroutineObj);
-        _coroutineExecutor = _coroutineObj.AddComponent<CoroutineExecutor>();
-    }
-
-    private static void EnsureCoroutineExecutor()
-    {
-        if (_coroutineExecutor == null)
-        {
-            CreateCoroutineExecutor();
-        }
-    }
-
-    public static void CallWaitForOneFrame(Action action)
-    {
-        EnsureCoroutineExecutor();
-        _coroutineExecutor.StartCoroutine(DoCallWaitForOneFrame(action));
-    }
-
-    public static void CallWaitForSeconds(float seconds, Action afterAction)
-    {
-        EnsureCoroutineExecutor();
-        _coroutineExecutor.StartCoroutine(DoCallWaitForSeconds(seconds, afterAction));
-    }
-
-    public static void CallWaitForAction(Func<bool> predicate, Action afterAction = null)
-    {
-        EnsureCoroutineExecutor();
-        _coroutineExecutor.StartCoroutine(DoCallWaitForAction(predicate, afterAction));
-    }
-
-
     /// <summary>
     /// 조건이 만족할때까지 루프합니다.
     /// </summary>
@@ -85,27 +39,9 @@ public static class CoroutineUtil
     /// </summary>
     /// <param name="coroutine"> 실행종료 할 코루틴 </param>
     /// <param name="afterAction"> 종료 후 실행할 Action </param>
-    public static void StopCoroutine(Coroutine coroutine,Action afterAction = null)
+    public static void StopCoroutine(Coroutine coroutine, Action afterAction = null)
     {
         _coroutineExecutor.StopCoroutine(coroutine);
-        afterAction?.Invoke();
-    }
-
-    private static IEnumerator DoCallWaitForOneFrame(Action action)
-    {
-        yield return null;
-        action?.Invoke();
-    }
-
-    private static IEnumerator DoCallWaitForSeconds(float seconds, Action afterAction)
-    {
-        yield return new WaitForSeconds(seconds);
-        afterAction?.Invoke();
-    }
-
-    private static IEnumerator DoCallWaitForAction(Func<bool> predicate, Action afterAction)
-    {
-        yield return new WaitUntil(predicate);
         afterAction?.Invoke();
     }
 
@@ -128,8 +64,6 @@ public static class CoroutineUtil
             action?.Invoke();
         }
     }
-
-
-
-    private class CoroutineExecutor : MonoBehaviour { }
 }
+
+

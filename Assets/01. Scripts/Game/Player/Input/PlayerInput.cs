@@ -1,6 +1,8 @@
 using Define;
 using System;
 using Unity.VisualScripting;
+
+using Seongho.InputSystem;
 using UnityEngine.InputSystem;
 
 public class PlayerInput : ExpansionMonoBehaviour, IPlayerInput, ISetupHandler
@@ -21,7 +23,6 @@ public class PlayerInput : ExpansionMonoBehaviour, IPlayerInput, ISetupHandler
 
     public void OnRegisterEvent(HASH_INPUT_PLAYER key, InputParams action)
     {
-
         _inputContainer.OnRegisterEvent(key, action);
     }
 
