@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public interface ISpringJoint2DHandler
+public interface IDistanceJoint2DHandler
 {
     public void SetDistance(float distance);
     public void SetTarget(Rigidbody2D target);

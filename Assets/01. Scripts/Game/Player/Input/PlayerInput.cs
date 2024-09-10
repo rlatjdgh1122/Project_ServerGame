@@ -7,7 +7,6 @@ using UnityEngine.InputSystem;
 
 public class PlayerInput : ExpansionMonoBehaviour, IPlayerInput, ISetupHandler
 {
-
     private InputMachine<HASH_INPUT_PLAYER> _inputContainer = null;
 
     public void Setup(ComponentList list)
@@ -20,7 +19,6 @@ public class PlayerInput : ExpansionMonoBehaviour, IPlayerInput, ISetupHandler
     {
         InputManager.Input.Player.SetCallbacks(this);
     }
-
     public void OnRegisterEvent(HASH_INPUT_PLAYER key, InputParams action)
     {
         _inputContainer.OnRegisterEvent(key, action);
@@ -35,15 +33,13 @@ public class PlayerInput : ExpansionMonoBehaviour, IPlayerInput, ISetupHandler
 
     public void OnLeftClickInput(InputAction.CallbackContext context)
     {
-
         _inputContainer.InputRunning(HASH_INPUT_PLAYER.LeftClick, context, true);
 
     }
 
     public void OnSpaceClickInput(InputAction.CallbackContext context)
     {
-
         _inputContainer.InputRunning(HASH_INPUT_PLAYER.Space, context, false);
-
     }
+
 }

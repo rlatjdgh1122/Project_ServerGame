@@ -10,6 +10,7 @@ public class StopController : ExpansionMonoBehaviour, ISetupHandler
 
     private IInputHandler<HASH_INPUT_PLAYER> _inputHandler = null;
 
+    private bool Test = false;
     public void Setup(ComponentList list)
     {
         _stopHandlerList = list.FindAll<IPlayerStopHandler>();
@@ -29,18 +30,15 @@ public class StopController : ExpansionMonoBehaviour, ISetupHandler
         _inputHandler.RemoveRegisterEvent(HASH_INPUT_PLAYER.Space, OnStop);
     }
 
-    public void OnStart(INPUT_KEY_STATE key, params object[] args)
+    public void OnStart()
     {
-        if (key == INPUT_KEY_STATE.DOWN)
+        foreach (var item in _stopHandlerList)
         {
-            foreach (var item in _stopHandlerList)
-            {
-                item.OnPlayerStart();
-            }
+            item.OnPlayerStart();
+        }
 
-        } //end keyDown
+    } //end keyDown
 
-    }
 
     /// <summary>
     /// Space바를 누를 경우 실행됩니다.
@@ -49,10 +47,23 @@ public class StopController : ExpansionMonoBehaviour, ISetupHandler
     {
         if (key == INPUT_KEY_STATE.DOWN)
         {
-            foreach (var item in _stopHandlerList)
+            Test = !Test;
+
+            if (Test)
             {
-                item.OnPlayerStop();
+                foreach (var item in _stopHandlerList)
+                {
+                    item.OnPlayerStop();
+                }
             }
+            else
+            {
+                foreach (var item in _stopHandlerList)
+                {
+                    item.OnPlayerStart();
+                }
+            }
+
 
         } //end keyDown
     }

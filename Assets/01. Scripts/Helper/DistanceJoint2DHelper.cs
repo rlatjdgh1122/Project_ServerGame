@@ -2,28 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(SpringJoint2D))]
-public class SpringJoint2DHelper : ExpansionMonoBehaviour, ISpringJoint2DHandler, ISetupHandler, IPlayerStopHandler
+[RequireComponent(typeof(DistanceJoint2D))]
+public class DistanceJoint2DHelper : ExpansionMonoBehaviour, IDistanceJoint2DHandler, ISetupHandler
 {
-    private SpringJoint2D _joint = null;
+    private DistanceJoint2D _joint = null;
 
     public void Setup(ComponentList list)
     {
-        _joint = list.Find<SpringJoint2D>();
+        _joint = list.Find<DistanceJoint2D>();
     }
 
     private void Start()
     {
         SetEnable(false);
-    }
-    public void OnPlayerStart()
-    {
-        
-    }
-
-    public void OnPlayerStop()
-    {
-        
     }
 
     public void SetTarget(Rigidbody2D target)

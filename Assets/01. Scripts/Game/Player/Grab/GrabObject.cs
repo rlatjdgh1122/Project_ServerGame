@@ -2,7 +2,7 @@ using System;
 
 public class GrabObject : ExpansionMonoBehaviour, IGrabHandler, ISetupHandler
 {
-    private ISpringJoint2DHandler _joint = null;
+    private IDistanceJoint2DHandler _joint = null;
     private ILineRenderer2DHandler _line = null;
     private ITargetSensor _targetSensor = null;
 
@@ -14,7 +14,7 @@ public class GrabObject : ExpansionMonoBehaviour, IGrabHandler, ISetupHandler
 
     public void Setup(ComponentList list)
     {
-        _joint = list.Find<ISpringJoint2DHandler>();
+        _joint = list.Find<IDistanceJoint2DHandler>();
         _line = list.Find<ILineRenderer2DHandler>();
         _targetSensor = list.Find<ITargetSensor>();
     }
@@ -45,7 +45,7 @@ public class GrabObject : ExpansionMonoBehaviour, IGrabHandler, ISetupHandler
         {
             //ø¨∞·«ÿ¡‹
             _joint?.SetTarget(_target.GetRigidBody());
-            _joint?.SetDistance(_targetSensor.GetDistance());
+            //_joint?.SetDistance(_targetSensor.GetDistance());
         }
         else
         {
