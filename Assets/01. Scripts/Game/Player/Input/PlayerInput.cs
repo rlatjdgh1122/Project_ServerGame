@@ -19,6 +19,7 @@ public class PlayerInput : ExpansionMonoBehaviour, IPlayerInput, ISetupHandler
     {
         InputManager.Input.Player.SetCallbacks(this);
     }
+
     public void OnRegisterEvent(HASH_INPUT_PLAYER key, InputParams action)
     {
         _inputContainer.OnRegisterEvent(key, action);
