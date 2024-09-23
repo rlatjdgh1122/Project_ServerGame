@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface ISpriteRendererHandler
+public interface ISpriteRenderer2DHandler
 {
     public void SetAlpha(float value);
+    void SetSprite(Sprite sprite);
 }

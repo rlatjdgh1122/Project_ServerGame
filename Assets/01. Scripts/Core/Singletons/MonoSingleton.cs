@@ -36,7 +36,7 @@ public class MonoSingleton<T> : ExpansionMonoBehaviour where T : MonoBehaviour
 
     }
 
-    public virtual void Start()
+    public virtual void Awake()
     {
         if (IsDontDestroyLoad)
         {

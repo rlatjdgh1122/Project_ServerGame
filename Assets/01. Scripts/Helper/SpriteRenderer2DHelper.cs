@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
-public class SpriteRendererHelper : ExpansionMonoBehaviour, ISpriteRendererHandler
+public class SpriteRenderer2DHelper : ExpansionMonoBehaviour, ISpriteRenderer2DHandler
 {
     private SpriteRenderer _sr = null;
 
@@ -18,4 +18,8 @@ public class SpriteRendererHelper : ExpansionMonoBehaviour, ISpriteRendererHandl
         _sr.color = color;
     }
 
+    public void SetSprite(Sprite sprite)
+    {
+        _sr.sprite = sprite;
+    }
 }

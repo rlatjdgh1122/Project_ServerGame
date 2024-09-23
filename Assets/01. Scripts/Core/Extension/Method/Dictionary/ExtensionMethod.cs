@@ -34,5 +34,17 @@ namespace ExtensionMethod.Dictionary
 
             if (dic.Count > 0) dic.Clear();
         }
+
+        public static value GetValue<key, value>(this Dictionary<key, value> dic, key myKey)
+        {
+            if (dic.TryGetValue(myKey, out value myValue))
+            {
+                return myValue;
+            }
+
+            Debug_S.LogError($"{myKey}키와 연결된 벨류를 찾을 수 없습니다");
+
+            return default;
+        }
     }
 }

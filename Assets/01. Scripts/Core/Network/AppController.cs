@@ -18,10 +18,8 @@ public class AppController : MonoSingleton<AppController>
     public UnityEvent OnInitCompletedEvent = null;
     public UnityEvent OnInitFailedEvent = null;
 
-    public override async void Start()
+    public async void Start()
     {
-        base.Start();
-
         await UnityServices.InitializeAsync();
 
         var state = await AuthenticationWrapper.DoAuth(3);

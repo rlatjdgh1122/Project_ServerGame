@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class DrawPathPrefab : ExpansionMonoBehaviour, ISetupHandler
 {
-    private ISpriteRendererHandler _sr = null;
+    private ISpriteRenderer2DHandler _sr = null;
 
     public void Setup(ComponentList list)
     {
-        _sr = GetComponent<ISpriteRendererHandler>();
+        _sr = GetComponent<ISpriteRenderer2DHandler>();
     }
 
     public void SetAlpha(float alpha)

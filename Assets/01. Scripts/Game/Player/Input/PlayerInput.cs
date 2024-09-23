@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using Seongho.InputSystem;
 using UnityEngine.InputSystem;
 
-public class PlayerInput : ExpansionMonoBehaviour, IPlayerInput, ISetupHandler
+public class PlayerInput : ExpansionMonoBehaviour, IPlayerInput, ISetupHandler, ITurnChangedHandler
 {
     private InputMachine<HASH_INPUT_PLAYER> _inputContainer = null;
 
@@ -43,4 +43,8 @@ public class PlayerInput : ExpansionMonoBehaviour, IPlayerInput, ISetupHandler
         _inputContainer.InputRunning(HASH_INPUT_PLAYER.Space, context, false);
     }
 
+    public void OnTurnChanged(TurnType prevType, TurnType newType)
+    {
+        Debug_S.Log(prevType);
+    }
 }
