@@ -10,16 +10,4 @@ public class GameManager : MonoSingleton<GameManager>
         InputManager.ChangedInputType(_initInputType);
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            InputManager.ChangedInputType(INPUT_TYPE.UI);
-        }
-
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            InputManager.ChangedInputType(INPUT_TYPE.Player);
-        }
-    }
 }
