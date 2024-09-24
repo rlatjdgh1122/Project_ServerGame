@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class GrabTarget : ExpansionMonoBehaviour, IGrabTargetHandler
+public abstract class GrabTarget : ExpansionMonoBehaviour, IGrabTargetHandler
 {
     private Rigidbody2D _rb = null;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
     }

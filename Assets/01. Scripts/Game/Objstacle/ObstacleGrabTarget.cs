@@ -1,9 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Netcode;
 using UnityEngine;
 
-public class ExpansionNetworkBehaviour : NetworkBehaviour
+public class ObstacleGrabTarget : GrabTarget
 {
-  
+
 }

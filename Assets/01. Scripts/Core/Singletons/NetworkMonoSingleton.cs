@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class NetworkMonoSingleton<T> : ExpansionNetworkBehaviour where T : ExpansionNetworkBehaviour
 {
-
+    public bool IsDontDestroyLoad = false;
     private static T _instance;
 
     /// <summary>
@@ -33,6 +33,18 @@ public class NetworkMonoSingleton<T> : ExpansionNetworkBehaviour where T : Expan
 
         }
 
+    }
+
+    public virtual void Awake()
+    {
+        if (IsDontDestroyLoad)
+        {
+            if (GameObject.FindObjectOfType<T>() != null)
+            {
+                DontDestroyOnLoad(gameObject);
+            }
+
+        } //end if
     }
 
 }
