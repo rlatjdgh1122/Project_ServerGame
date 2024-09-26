@@ -68,7 +68,7 @@ public class AppController : MonoSingleton<AppController>
 
     }
 
-    public UserData GetUserData(string username, Color color = default)
+    public UserData GetUserData(string username, TurnType turnType = default)
     {
 
         return new UserData
@@ -76,7 +76,7 @@ public class AppController : MonoSingleton<AppController>
 
             nickName = username,
             authId = AuthenticationService.Instance.PlayerId,
-            color = color,
+            turnType = turnType,
 
         };
 

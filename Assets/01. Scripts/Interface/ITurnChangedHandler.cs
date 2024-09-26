@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public interface ITurnChangedHandler : IInterfaceSetUpHandler
 {
     void IInterfaceSetUpHandler.IStart()

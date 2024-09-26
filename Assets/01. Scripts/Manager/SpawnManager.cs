@@ -9,7 +9,7 @@ public class SpawnManager : NetworkMonoSingleton<SpawnManager>
 
     public override void Awake()
     {
-        _currentPos = transform;
+        _currentPos = _startPos;
     }
 
     public void ChangedSpawnPosition(Transform pos)

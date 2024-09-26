@@ -6,7 +6,7 @@ using UnityEngine;
 public static partial class CoroutineUtil
 {
     /// <summary>
-    /// 조건이 만족할때까지 루프합니다.
+    /// [루프 함수] 조건이 만족할때까지 루프합니다.
     /// </summary>
     /// <param name="predicate"> 종료 조건 </param>
     /// <param name="action"> 루프되면서 실행할 Action </param>
@@ -19,14 +19,14 @@ public static partial class CoroutineUtil
         _coroutineExecutor.StartCoroutine(DoCallWaitForActionUntilTrue(heartBeat, predicate, action, afterAction));
     }
 
-    /// <summary>
-    /// 직접 Stop할때까지 루프합니다.
-    /// CorouineUtil.StopCoroutine을 사용하여 외부에서 종료해줍니다.
-    /// </summary>
-    /// <param name="action"> 루프되면서 실행할 Action </param>
-    /// <param name="heartBeat"> 반복 주기 </param>
-    /// <returns> 코루틴 </returns>
-    public static Coroutine CallWaitForStopCorouine(Action action, float heartBeat = 0.02f)
+	/// <summary>
+	/// [루프 함수] 직접 Stop할때까지 루프합니다.
+	/// CorouineUtil.StopCoroutine을 사용하여 외부에서 종료해줍니다.
+	/// </summary>
+	/// <param name="action"> 루프되면서 실행할 Action </param>
+	/// <param name="heartBeat"> 반복 주기 </param>
+	/// <returns> 코루틴 </returns>
+	public static Coroutine CallWaitForStopCorouine(Action action, float heartBeat = 0.02f)
     {
         EnsureCoroutineExecutor();
 
