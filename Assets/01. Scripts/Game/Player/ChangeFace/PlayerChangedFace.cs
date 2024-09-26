@@ -13,6 +13,7 @@ public class PlayerChangedFace : ExpansionMonoBehaviour, ISetupHandler, IPlayerS
 
     public void Setup(ComponentList list)
     {
+        
         _sr = list.Find<ISpriteRenderer2DHandler>();
 
         string[] paths = System.IO.Directory.GetFiles($"{_path}/{SkinName}", "*.png");
