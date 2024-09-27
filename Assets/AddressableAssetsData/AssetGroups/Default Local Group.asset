@@ -18,13 +18,13 @@ MonoBehaviour:
   m_GUID: 8a32f2ce80bce8e429b48992143a31a8
   m_SerializeEntries:
   - m_GUID: df2e1091dd6172640b6717f390f931b4
-    m_Address: Happy
+    m_Address: Default
     m_ReadOnly: 0
     m_SerializedLabels:
     - Face_Default
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 61a2049094063e344a24aac09260dae9
-    m_Address: Assets/02. Sprites/Game/Player/Face/Default/Stop.png
+    m_Address: Stop
     m_ReadOnly: 0
     m_SerializedLabels:
     - Face_Default
