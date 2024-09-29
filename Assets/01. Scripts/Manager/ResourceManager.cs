@@ -1,6 +1,8 @@
 using ExtensionMethod.Object;
+using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -10,129 +12,123 @@ using Object = UnityEngine.Object;
 
 public class ResourceManager : MonoSingleton<ResourceManager>
 {
-	[SerializeField] private List<AssetLabelReference> _loadLabels = new();
-	private Dictionary<Type, DataContainer<object>> _typeToDataContainerDic = new();
+    [SerializeField] private List<AssetLabelReference> _defaultLoadLabels = new();                                   //인스펙터에서 가져올 라벨들을 지정
+    private Dictionary<string, (Type type, IDataContainer dataContainer)> _labelToTypeAndDataContainerDic = new();   //라벨과 타입에 해당되는 에셋들을 저장하는 딕셔너리
+    private Dictionary<Type, IDataContainer> _typeToDataContainerDic = new();                                        //타입에 해당되는 에셋들을 저장하는 딕셔너리
 
-	private string _curLabelName = "";
+    private string _curLabelName = "";       //현재 라벨 이름을 저장해준다.
+    private MethodInfo _cachedMethod = null; //리플렉션 중복을 막기 위해 미리 캐시해준다.
 
-	public void Add<T>(T value) where T : class
-	{
-		DataContainer<T> container = _typeToDataContainerDic[typeof(T)] as DataContainer<T>;
-		_typeToDataContainerDic.Add(typeof(T), container.SetData(value, value));
-	}
+    public override void Awake()
+    {
+        base.Awake();
 
-	public T GetValue<T>(string key) where T : class
-	{
-		DataContainer<T> container = _typeToDataContainerDic[typeof(T)] as DataContainer<T>;
-		return container.GetData(key.GetHashCode());
-	}
+        //처음 실행해줄 경우 캐싱해준다.
+        if (_cachedMethod == null)
+        {
+            _cachedMethod = typeof(ResourceManager).GetMethod("DataModify", BindingFlags.NonPublic | BindingFlags.Instance);
 
+        } //end if
 
-	public override void Awake()
-	{
-		base.Awake();
+        Setting();
+    }
 
-		Setting();
-	}
+    private void Setting()
+    {
+        //등록한 라벨들을 실행해준다.
+        foreach (var label in _defaultLoadLabels)
+        {
+            OnRegisterLabel(label.labelString);
+        }
+    }
 
-	private void Setting()
-	{
-		//등록한 라벨들을 데이터에 저장해줌
-		foreach (var label in _loadLabels)
-		{
-			_curLabelName = label.labelString;
+    /// <summary>
+    /// 타입과 키에 해당되는 에셋을 가져온다.
+    /// </summary>
+    public T GetAsset<T>(string key) where T : Object
+    {
+        if (_typeToDataContainerDic.TryGetValue(typeof(T), out var dataContainer))
+        {
+            return dataContainer.GetData(key).Cast<T>();
+        }
 
-			var handle = Addressables.LoadResourceLocationsAsync(label.labelString, typeof(Sprite));
-			handle.Completed += OnLoadLabelListCompleted;
-			Debug_S.Log($"라벨 : {_curLabelName}");
-		}
-	}
-
-	public T GetAsset<T>(string key) where T : Object
-	{
-		if (_typeToDataContainerDic.TryGetValue(typeof(T), out var value))
-		{
-			return value.GetData(key).Cast<T>();
-		}
-
-		else return null;
-	}
-
-	public List<T> GetAssetsByLabelName<T>(string labelName) where T : Object
-	{
-		List<T> list = new List<T>();
-
-		if (_typeToDataContainerDic.TryGetValue(typeof(T), out var listValue))
-		{
-			foreach (Object item in listValue.)
-			{
-				if (item is T result)
-				{
-					list.Add(result);
-				}
-
-			} //end foreach
-		} //end if
-
-		return list;
-	}
-
-	/// <summary>
-	/// 라벨에 포함되어 있는 에셋을 성공적으로 가져올 경우 작업을 처리해주는 함수
-	/// </summary>
-	private void OnLoadLabelListCompleted(AsyncOperationHandle<IList<IResourceLocation>> handle)
-	{
-		foreach (IResourceLocation result in handle.Result)
-		{
-			DataModify<Object>(result.PrimaryKey, Mapping);
-			Debug_S.Log("확인");
-
-		} //end foreach
-	}
-
-	/// <summary>
-	/// 키와 에셋을 매핑해주는 함수
-	/// </summary>
-	private void Mapping(Object data)
-	{
-		Debug.Log(data.GetType());
-		if (!_labelNameToObjectListDic.ContainsKey(_curLabelName))
-		{
-			_labelNameToObjectListDic.Add(_curLabelName, new List<Object>());
-
-		} //end if
-
-		if (!_labelNameToObjectListDic[_curLabelName].Contains(data))
-		{
-			_labelNameToObjectListDic[_curLabelName].Add(data);
-
-		} //end if
-	}
+        Debug_S.LogError($"타입 : ({typeof(T)}), 이름 : ({key})을 찾을 수 없습니다.");
+        return null;
+    }
 
 
-	private void DataModify<T>(string key, Action<Object> action)
-	{
-		AsyncOperationHandle handle = Addressables.LoadAssetAsync<T>(key);
+    public List<T> GetAssetsByLabelName<T>(string labelName) where T : Object
+    {
+        List<T> list = new List<T>();
 
-		// 완료 시점에 실행할 내용 callback으로 등록
-		handle.Completed += (data) =>
-		{
-			if (!_keyToObjectDic.ContainsKey(key))
-			{
-				Object result = (Object)data.Result;
-				action?.Invoke(result);
-				_keyToObjectDic.Add(key, result);
+        if (_labelToTypeAndDataContainerDic.TryGetValue(labelName, out var dataContainer))
+        {
+            if(dataContainer.)
+            foreach (var item in dataContainer.GetAllValues())
+            {
+                if (item is T result)
+                {
+                    list.Add(result);
+                }
 
-				Addressables.Release(data);
+            } //end foreach
+        } //end if
+        return list;
+    }
 
-			} //end if
-			else
-			{
-				Debug_S.LogError($"중복된 키를 발견하였습니다. 키 : {key}, 이름 : {(data.Result as Object).name}");
+    /// <summary>
+    /// 라벨을 등록해준다.
+    /// 사용 예시) 스킨을 살 경우 등록해줌
+    public void OnRegisterLabel(string label)
+    {
+        _curLabelName = label;
 
-			} //end else
+        var handle = Addressables.LoadResourceLocationsAsync(label);
+        handle.Completed += OnLoadLabelListCompleted;
+    }
 
-		};
 
-	}
+
+    /// <summary>
+    /// 라벨에 포함되어 있는 에셋을 성공적으로 가져올 경우 작업을 처리해주는 함수
+    /// </summary>
+    private void OnLoadLabelListCompleted(AsyncOperationHandle<IList<IResourceLocation>> handle)
+    {
+        foreach (IResourceLocation result in handle.Result)
+        {
+            //제너릭 메서드는 컴파일 시에 타입을 고정되기 때문에
+            //리플렉션을 사용하여 result.ResourceType 타입에 따라 런타입에 동적으로 전달해준다.
+            _cachedMethod?.MakeGenericMethod(result.ResourceType)
+                         .Invoke(this, new object[] { result.PrimaryKey });
+        } //end foreach
+    }
+
+    /// <summary>
+    /// 캐싱 함수, 데이터를 로드해주고 딕셔너리에 추가해준다.
+    /// </summary>
+    private void DataModify<T>(string key) where T : class
+    {
+        AsyncOperationHandle handle = Addressables.LoadAssetAsync<T>(key);
+
+        // 완료 시점에 실행할 내용 callback으로 등록
+        handle.Completed += (data) =>
+        {
+            T result = (T)data.Result;
+            Add(key, result);
+
+            Addressables.Release(data);
+
+        };
+    }
+
+    private void Add<T>(string key, T value) where T : class
+    {
+        if (!_typeToDataContainerDic.ContainsKey(typeof(T)))
+        {
+            _typeToDataContainerDic.Add(typeof(T), new DataContainer<T>());
+        }
+
+        DataContainer<T> container = _typeToDataContainerDic[typeof(T)] as DataContainer<T>;
+        container.AddData(key, value);
+    }
 }

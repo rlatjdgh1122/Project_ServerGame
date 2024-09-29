@@ -1,23 +1,34 @@
+using ExtensionMethod.Object;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DataContainer<T> where T : class
+public interface IDataContainer
 {
-	private Dictionary<int, T> _hashCodeToDataDic = new();
+    public void AddData(string key, object data);
+    public object GetData(string key);
+    IEnumerable<object> GetAllValues();
+}
 
-	public T GetData(int key)
-	{
-		return _hashCodeToDataDic[key];
-	}
+public class DataContainer<T> : IDataContainer where T : class
+{
+    private Dictionary<int, T> _hashCodeToDataDic = new();
 
-	public void SetData(int key, T value)
-	{
-		_hashCodeToDataDic.Add(key, value);
-	}
+    public void AddData(string key, object data)
+    {
+        _hashCodeToDataDic.Add(key.GetHashCode(), data.Cast<T>());
+    }
 
-	public Dictionary<int, T>.ValueCollection GetValues()
-	{
-		return _hashCodeToDataDic.Values;
-	}
+    public object GetData(string key)
+    {
+        return _hashCodeToDataDic[key.GetHashCode()];
+    }
+
+    public IEnumerable<object> GetAllValues()
+    {
+        foreach (var value in _hashCodeToDataDic.Values)
+        {
+            yield return value;
+        }
+    }
 }

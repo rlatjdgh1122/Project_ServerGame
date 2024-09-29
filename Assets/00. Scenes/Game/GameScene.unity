@@ -863,6 +863,7 @@ MonoBehaviour:
   IsDontDestroyLoad: 0
   _loadLabels:
   - m_LabelString: Face_Default
+  - m_LabelString: Sound
 --- !u!1 &1328141578
 GameObject:
   m_ObjectHideFlags: 0
