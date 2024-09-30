@@ -244,7 +244,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsDontDestroyLoad: 1
-  _defaultLoadLabels: []
+  _defaultLoadLabels:
+  - m_LabelString: Face_Default
 --- !u!4 &1402783407
 Transform:
   m_ObjectHideFlags: 0

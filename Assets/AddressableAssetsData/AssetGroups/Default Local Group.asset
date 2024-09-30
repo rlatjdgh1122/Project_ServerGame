@@ -29,12 +29,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - Face_Default
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 18a61e41432ce1146b83c69330af447e
-    m_Address: AA
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Sound
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e1b7bdba1abaa1e459c9d0f9ed4f1c8b
     m_Address: Player
     m_ReadOnly: 0

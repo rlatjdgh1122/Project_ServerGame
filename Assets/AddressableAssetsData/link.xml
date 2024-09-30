@@ -23,7 +23,6 @@
   </assembly>
   <assembly fullname="Unity.Netcode.Components, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
     <type fullname="Unity.Netcode.Components.NetworkRigidbody2D" preserve="all" />
-    <type fullname="Unity.Netcode.Components.NetworkTransform" preserve="all" />
   </assembly>
   <assembly fullname="Unity.Netcode.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
     <type fullname="Unity.Netcode.NetworkObject" preserve="all" />
@@ -34,9 +33,6 @@
     <type fullname="UnityEngine.ResourceManagement.ResourceProviders.InstanceProvider" preserve="all" />
     <type fullname="UnityEngine.ResourceManagement.ResourceProviders.LegacyResourcesProvider" preserve="all" />
     <type fullname="UnityEngine.ResourceManagement.ResourceProviders.SceneProvider" preserve="all" />
-  </assembly>
-  <assembly fullname="UnityEngine.AudioModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-    <type fullname="UnityEngine.AudioClip" preserve="all" />
   </assembly>
   <assembly fullname="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
     <type fullname="UnityEngine.GameObject" preserve="all" />

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -34,16 +35,15 @@ public class ResourceManager : MonoSingleton<ResourceManager>
 
 		Init();
 	}
-
+	
 	private void Init()
 	{
-		OnRegisterLabel("Face_Default");
-		/*//등록한 라벨들을 실행해준다.
+		//등록한 라벨들을 실행해준다.
 		foreach (var label in _defaultLoadLabels)
 		{
 			OnRegisterLabel(label.labelString);
 
-		} //end foreach*/
+		} //end foreach
 	}
 
 	/// <summary>

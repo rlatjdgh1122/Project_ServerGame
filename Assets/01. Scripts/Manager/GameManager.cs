@@ -1,32 +1,22 @@
 using Seongho.InputSystem;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : NetworkMonoSingleton<GameManager>
+public class GameManager : MonoBehaviour
 {
 	[SerializeField] private INPUT_TYPE _initInputType = INPUT_TYPE.Player;
 
-	public override void Awake()
+	public void Awake()
 	{
 		InputManager.ChangedInputType(_initInputType);
 	}
 
 	private void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.Y))
+		if (Input.GetKeyDown(KeyCode.S))
 		{
-			GameStart();
+			NetworkGameManager.Instance.GameStart();
 		}
 	}
-
-	private void GameStart()
-	{
-		//플레이어들을 생성해준 뒤
-		SpawnManager.Instance.SpawnPlayers();
-
-		//게임 시작
-		TurnManager.Instance.GameStart();
-
-		SignalHub.OnGameStartEvent?.Invoke();
-	}
-
 }
