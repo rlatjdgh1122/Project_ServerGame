@@ -11,7 +11,6 @@ using UnityEngine.SceneManagement;
 
 public class AppController : MonoSingleton<AppController>
 {
-
     [SerializeField] private ClientSingle _clientPrefab = null;
     [SerializeField] private HostSingle _hostPrefab = null;
 

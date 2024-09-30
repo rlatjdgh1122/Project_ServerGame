@@ -513,8 +513,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsDontDestroyLoad: 0
-  _loadLabels:
-  - m_LabelString: Face_Default
+  _defaultLoadLabels:
+  - m_LabelString: Player
 --- !u!1 &647906014
 GameObject:
   m_ObjectHideFlags: 0

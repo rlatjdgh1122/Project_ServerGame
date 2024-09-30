@@ -2,50 +2,48 @@ using UnityEngine;
 
 public class MonoSingleton<T> : ExpansionMonoBehaviour where T : MonoBehaviour
 {
-    public bool IsDontDestroyLoad = false;
+	public bool IsDontDestroyLoad = false;
+	private static T _instance;
 
-    private static T _instance;
+	/// <summary>
+	/// 인스턴스
+	/// </summary>
+	public static T Instance
+	{
 
-    /// <summary>
-    /// 인스턴스
-    /// </summary>
-    public static T Instance
-    {
+		get
+		{
 
-        get
-        {
+			if (_instance == null)
+			{
+				_instance = FindObjectOfType<T>();
 
-            if (_instance == null)
-            {
+				if (_instance == null)
+				{
 
-                _instance = FindObjectOfType<T>();
+					GameObject obj = new GameObject(typeof(T).Name);
+					_instance = obj.AddComponent<T>();
 
-                if (_instance == null)
-                {
+				}
 
-                    GameObject obj = new GameObject(typeof(T).Name);
-                    _instance = obj.AddComponent<T>();
+			}
 
-                }
+			return _instance;
 
-            }
+		}
 
-            return _instance;
+	}
 
-        }
+	public virtual void Awake()
+	{
+		if (IsDontDestroyLoad)
+		{
+			if (GameObject.FindObjectOfType<T>() != null)
+			{
+				DontDestroyOnLoad(this);
+			}
 
-    }
-
-    public virtual void Awake()
-    {
-        if (IsDontDestroyLoad)
-        {
-            if (GameObject.FindObjectOfType<T>() != null)
-            {
-                DontDestroyOnLoad(gameObject);
-            }
-
-        } //end if
-    }
+		} //end if
+	}
 
 }

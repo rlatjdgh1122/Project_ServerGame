@@ -2,49 +2,46 @@ using UnityEngine;
 
 public class NetworkMonoSingleton<T> : ExpansionNetworkBehaviour where T : ExpansionNetworkBehaviour
 {
-    public bool IsDontDestroyLoad = false;
-    private static T _instance;
+	public bool IsDontDestroyLoad = false;
+	private static T _instance = null;
+	/// <summary>
+	/// 인스턴스
+	/// </summary>
+	public static T Instance
+	{
 
-    /// <summary>
-    /// 인스턴스
-    /// </summary>
-    public static T Instance
-    {
+		get
+		{
+			if (_instance == null)
+			{
 
-        get
-        {
+				_instance = FindObjectOfType<T>();
 
-            if (_instance == null)
-            {
+				if (_instance == null)
+				{
 
-                _instance = FindObjectOfType<T>();
+					GameObject obj = new GameObject(typeof(T).Name);
+					_instance = obj.AddComponent<T>();
 
-                if (_instance == null)
-                {
+				}
+			}
 
-                    GameObject obj = new GameObject(typeof(T).Name);
-                    _instance = obj.AddComponent<T>();
+			return _instance;
 
-                }
+		}
 
-            }
+	}
 
-            return _instance;
+	public virtual void Awake()
+	{
+		if (IsDontDestroyLoad)
+		{
+			if (GameObject.FindObjectOfType<T>() != null)
+			{
+				DontDestroyOnLoad(gameObject);
+			}
 
-        }
-
-    }
-
-    public virtual void Awake()
-    {
-        if (IsDontDestroyLoad)
-        {
-            if (GameObject.FindObjectOfType<T>() != null)
-            {
-                DontDestroyOnLoad(gameObject);
-            }
-
-        } //end if
-    }
+		} //end if
+	}
 
 }

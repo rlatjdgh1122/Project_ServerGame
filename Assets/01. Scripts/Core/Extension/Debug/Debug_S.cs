@@ -7,18 +7,18 @@ using UnityEngine;
 /// </summary>
 public static class Debug_S
 {
-    public static void Log(object msg)
-    {
+	public static void Log(object msg)
+	{
 #if UNITY_EDITOR
-        Debug.Log(msg);
+		Debug.Log(msg);
 #endif
-    }
+	}
 
-    public static void LogError(object msg)
-    {
+	public static void LogError(object msg)
+	{
 #if UNITY_EDITOR
-        Debug.LogError(msg);
+		Debug.LogError(msg);
 #endif
-    }
+	}
 }
 

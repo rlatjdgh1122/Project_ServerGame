@@ -4,32 +4,35 @@ using UnityEngine;
 
 public class SpawnManager : NetworkMonoSingleton<SpawnManager>
 {
-    [SerializeField] private Transform _startPos = null;
-    [SerializeField] private Transform _currentPos = null;
+	[SerializeField] private Transform _startPos = null;
+	[SerializeField] private Transform _currentPos = null;
 
-    public override void Awake()
-    {
-        _currentPos = _startPos;
-    }
+	public override void Awake()
+	{
+		_currentPos = _startPos;
+	}
 
-    public void ChangedSpawnPosition(Transform pos)
-    {
-        _currentPos = pos;
-    }
+	public void ChangedSpawnPosition(Transform pos)
+	{
+		_currentPos = pos;
+	}
 
-    public void ReStartSpawnPosition(Transform pos)
-    {
-        _currentPos = _startPos;
-    }
+	public void ReStartSpawnPosition(Transform pos)
+	{
+		_currentPos = _startPos;
+	}
 
-    public void SpawnPlayers()
-    {
-        foreach (var id in NetworkManager.ConnectedClientsIds)
-        {
-            Player player = PlayerManager.Instance.SpawnPlayer(id);
-            player.SetPostion(_currentPos);
+	public void SpawnPlayers()
+	{
+		Debug.Log("?? : " + NetworkManager.ConnectedClientsIds.Count);
 
-        } //end foreach
+		foreach (var id in NetworkManager.ConnectedClientsIds)
+		{
+			Player player = PlayerManager.Instance.SpawnPlayer(id);
+			player.SetPostion(_currentPos);
 
-    }
+
+		} //end foreach
+
+	}
 }

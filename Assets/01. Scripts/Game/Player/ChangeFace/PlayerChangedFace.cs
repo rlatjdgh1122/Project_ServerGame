@@ -1,48 +1,51 @@
 using ExtensionMethod.Dictionary;
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class PlayerChangedFace : ExpansionMonoBehaviour, ISetupHandler, IPlayerStopHandler
+public class PlayerChangedFace : ExpansionMonoBehaviour, ISetupHandler, IPlayerStopHandler, IGameFlowHandler
 {
-    public string SkinName = "";
+	public string SkinName = "";
 
-    private Dictionary<FaceType, Sprite> _typeToSpriteDic = new();
-    private ISpriteRenderer2DHandler _sr = null;
+	private Dictionary<FaceType, Sprite> _typeToSpriteDic = new();
+	private ISpriteRenderer2DHandler _sr = null;
 
-    public void Setup(ComponentList list)
-    {
+	public void Setup(ComponentList list)
+	{
+		_sr = list.Find<ISpriteRenderer2DHandler>();
+	}
 
-        _sr = list.Find<ISpriteRenderer2DHandler>();
+	void IGameFlowHandler.OnGameStart()
+	{
+		List<Sprite> spriteList = ResourceManager.Instance.GetAssetsByLabelName<Sprite>(SkinName);
 
+		foreach (Sprite sprite in spriteList)
+		{
+			if (Enum.TryParse(sprite.name, out FaceType type))
+			{
+				_typeToSpriteDic.TryAdd(type, sprite);
+			}
 
-    }
+		}//end foreach
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.V))
-        {
-            List<Sprite> spriteList = ResourceManager.Instance.GetAssetsByLabelName<Sprite>(SkinName);
+		Debug_S.Log("¼¼ÆÃ¿Ï");
+	}
 
-            for (int i = 0; i < spriteList.Count; i++)
-            {
-                _typeToSpriteDic.TryAdd((FaceType)i, spriteList[i]);
+	void IGameFlowHandler.OnGameEnd()
+	{
 
-            } //end for
-        }
+	}
 
-    }
+	public void OnPlayerStart()
+	{
+		_sr.SetSprite(_typeToSpriteDic.GetValue(FaceType.Default));
+	}
 
-
-    public void OnPlayerStart()
-    {
-        _sr.SetSprite(_typeToSpriteDic.GetValue(FaceType.Default));
-    }
-
-    public void OnPlayerStop()
-    {
-        _sr.SetSprite(_typeToSpriteDic.GetValue(FaceType.Stop));
-    }
+	public void OnPlayerStop()
+	{
+		_sr.SetSprite(_typeToSpriteDic.GetValue(FaceType.Stop));
+	}
 
 
 }
