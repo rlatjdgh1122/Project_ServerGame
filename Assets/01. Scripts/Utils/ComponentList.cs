@@ -9,6 +9,15 @@ public class ComponentList
 {
 	private Dictionary<Type, List<Component>> _typeToComponentDic = new();
 
+	public ComponentList(Component[] compos)
+	{
+		foreach (Component comp in compos)
+		{
+			Add(comp.GetType(), comp);
+
+		}//end foreach
+	}
+
 	public T Find<T>()
 	{
 		if (_typeToComponentDic.TryGetValue(typeof(T), out var compos))
@@ -39,7 +48,27 @@ public class ComponentList
 		{
 			_typeToComponentDic[type] = new List<Component>();
 		}
-
 		_typeToComponentDic[type].Add(compo);
+
+		// 인터페이스나 부모 타입도 등록
+		foreach (var interfaceType in type.GetInterfaces())
+		{
+			if (!_typeToComponentDic.ContainsKey(interfaceType))
+			{
+				_typeToComponentDic[interfaceType] = new List<Component>();
+			}
+			_typeToComponentDic[interfaceType].Add(compo);
+		}
+
+		Type baseType = type.BaseType;
+		while (baseType != null && baseType != typeof(MonoBehaviour))
+		{
+			if (!_typeToComponentDic.ContainsKey(baseType))
+			{
+				_typeToComponentDic[baseType] = new List<Component>();
+			}
+			_typeToComponentDic[baseType].Add(compo);
+			baseType = baseType.BaseType;
+		}
 	}
 }

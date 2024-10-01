@@ -1,58 +1,66 @@
 using Define;
 using Seongho.InputSystem;
 
-public class GrabController : ExpansionMonoBehaviour, ISetupHandler, IPlayerStopHandler
+public class GrabController : ExpansionMonoBehaviour, ISetupHandler, IPlayerStopHandler, IInterfaceNetworkHandler
 {
-    private IInputHandler<HASH_INPUT_PLAYER> _inputHandler = null;
-    private IGrabHandler _grabHandler = null;
+	private IInputHandler<HASH_INPUT_PLAYER> _inputHandler = null;
+	private IGrabHandler _grabHandler = null;
 
-    public void Setup(ComponentList list)
-    {
-        _inputHandler = list.Find<IInputHandler<HASH_INPUT_PLAYER>>();
-        _grabHandler = list.Find<IGrabHandler>();
+	public void Setup(ComponentList list)
+	{
+		_inputHandler = list.Find<IInputHandler<HASH_INPUT_PLAYER>>();
+		_grabHandler = list.Find<IGrabHandler>();
+	}
 
-        OnRegister();
-    }
+	public void OnSpawn()
+	{
+		OnRegister();
+	}
 
-    private void OnRegister()
-    {
-        _inputHandler.OnRegisterEvent(HASH_INPUT_PLAYER.LeftClick, FindTarget);
-    }
+	public void OnDespawn()
+	{
 
-    private void RemoveRegister()
-    {
-        _inputHandler.RemoveRegisterEvent(HASH_INPUT_PLAYER.LeftClick, FindTarget);
-    }
+	}
 
-    private void FindTarget(INPUT_KEY_STATE key, object[] args)
-    {
-        if (key == INPUT_KEY_STATE.DOWN)
-        {
-            _grabHandler.Grab();
-        }
-        else if (key == INPUT_KEY_STATE.UP)
-        {
-            _grabHandler.GrabStop();
-        }
-        else if (key == INPUT_KEY_STATE.PRESSING)
-        {
-            _grabHandler.Grabbing();
-        }
-    }
+	private void OnRegister()
+	{
+		_inputHandler.OnRegisterEvent(HASH_INPUT_PLAYER.LeftClick, FindTarget);
+	}
 
-    public void OnPlayerStart()
-    {
-        
-    }
+	private void RemoveRegister()
+	{
+		_inputHandler.RemoveRegisterEvent(HASH_INPUT_PLAYER.LeftClick, FindTarget);
+	}
 
-    public void OnPlayerStop()
-    {
-        _grabHandler.GrabStop();
-    }
+	private void FindTarget(INPUT_KEY_STATE key, object[] args)
+	{
+		if (key == INPUT_KEY_STATE.DOWN)
+		{
+			_grabHandler.Grab();
+		}
+		else if (key == INPUT_KEY_STATE.UP)
+		{
+			_grabHandler.GrabStop();
+		}
+		else if (key == INPUT_KEY_STATE.PRESSING)
+		{
+			_grabHandler.Grabbing();
+		}
+	}
 
-    private void OnDestroy()
-    {
-        RemoveRegister();
-    }
-   
+	public void OnPlayerStart()
+	{
+
+	}
+
+	public void OnPlayerStop()
+	{
+		_grabHandler.GrabStop();
+	}
+
+	private void OnDestroy()
+	{
+		RemoveRegister();
+	}
+
 }

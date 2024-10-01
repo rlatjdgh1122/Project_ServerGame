@@ -10,7 +10,7 @@ public class NetworkInitalizer : ExpansionNetworkBehaviour
 
 	public override void OnNetworkSpawn()
 	{
-		ComponentList list = new ComponentList();
+		ComponentList list = new ComponentList(GetComponentsInChildren<Component>());
 
 		_interfaceList = GetComponentsInChildren<IInterfaceNetworkHandler>().ToList();
 

@@ -5,33 +5,34 @@ using UnityEngine;
 
 public class Initializer : ExpansionMonoBehaviour
 {
-    private List<IInterfaceSetUpHandler> _interfaceList = new();
+	private List<IInterfaceSetUpHandler> _interfaceList = new();
 
-    public void Awake()
-    {
-        ComponentList list = new ComponentList();
-        _interfaceList = GetComponentsInChildren<IInterfaceSetUpHandler>().ToList();
+	public void Awake()
+	{
+		ComponentList list = new ComponentList(GetComponentsInChildren<Component>());
 
-        foreach (var item in GetComponentsInChildren<ISetupHandler>())
-        {
-            item.Setup(list);
+		_interfaceList = GetComponentsInChildren<IInterfaceSetUpHandler>().ToList();
 
-        } //end foreach
+		foreach (var item in GetComponentsInChildren<ISetupHandler>())
+		{
+			item.Setup(list);
 
-        foreach (var item in _interfaceList)
-        {
-            item.IStart();
+		} //end foreach
 
-        } //end foreach
-    }
+		foreach (var item in _interfaceList)
+		{
+			item.IStart();
 
-    private void OnDestroy()
-    {
-        foreach (var item in _interfaceList)
-        {
-            item.IDestroy();
+		} //end foreach
+	}
 
-        } //end foreach
-    }
+	private void OnDestroy()
+	{
+		foreach (var item in _interfaceList)
+		{
+			item.IDestroy();
+
+		} //end foreach
+	}
 
 }
