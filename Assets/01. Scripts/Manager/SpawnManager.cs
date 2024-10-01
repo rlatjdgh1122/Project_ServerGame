@@ -24,8 +24,6 @@ public class SpawnManager : NetworkMonoSingleton<SpawnManager>
 
 	public void SpawnPlayers()
 	{
-		Debug.Log("?? : " + NetworkManager.ConnectedClientsIds.Count);
-
 		foreach (var id in NetworkManager.ConnectedClientsIds)
 		{
 			Player player = PlayerManager.Instance.SpawnPlayer(id);

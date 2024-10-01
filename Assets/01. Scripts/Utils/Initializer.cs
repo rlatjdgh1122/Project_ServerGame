@@ -9,7 +9,7 @@ public class Initializer : ExpansionMonoBehaviour
 
     public void Awake()
     {
-        ComponentList list = new ComponentList(GetComponentsInChildren<Component>());
+        ComponentList list = new ComponentList();
         _interfaceList = GetComponentsInChildren<IInterfaceSetUpHandler>().ToList();
 
         foreach (var item in GetComponentsInChildren<ISetupHandler>())

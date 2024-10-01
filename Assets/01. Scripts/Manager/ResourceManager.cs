@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -35,7 +34,7 @@ public class ResourceManager : MonoSingleton<ResourceManager>
 
 		Init();
 	}
-	
+
 	private void Init()
 	{
 		//등록한 라벨들을 실행해준다.
@@ -116,7 +115,7 @@ public class ResourceManager : MonoSingleton<ResourceManager>
 	/// <summary>
 	/// 라벨에 포함되어 있는 에셋을 성공적으로 가져올 경우 작업을 처리해주는 함수
 	/// </summary>
-	private void OnLoadLabelListCompleted(AsyncOperationHandle<IList<IResourceLocation>> handle)	
+	private void OnLoadLabelListCompleted(AsyncOperationHandle<IList<IResourceLocation>> handle)
 	{
 		_targetCount += handle.Result.Count;
 
@@ -148,7 +147,7 @@ public class ResourceManager : MonoSingleton<ResourceManager>
 			Addressables.Release(data);
 
 			_curCount++;
-			if(_curCount == _targetCount)
+			if (_curCount == _targetCount)
 			{
 				SignalHub.OnAssetLoadCompetedEvent?.Invoke();
 
