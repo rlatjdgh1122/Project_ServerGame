@@ -2,7 +2,7 @@ using Seongho.InputSystem;
 using Unity.VisualScripting;
 using UnityEngine.InputSystem;
 
-public class NetworkPlayerInput : ExpansionNetworkBehaviour, IPlayerInput, IInterfaceNetworkHandler
+public class NetworkPlayerInput : ExpansionNetworkBehaviour, IPlayerInput, INetworkSpawnHandler
 {
 	private InputMachine<HASH_INPUT_PLAYER> _inputContainer = null;
 
@@ -16,7 +16,7 @@ public class NetworkPlayerInput : ExpansionNetworkBehaviour, IPlayerInput, IInte
 
 	public void OnDespawn()
 	{
-		throw new System.NotImplementedException();
+		
 	}
 
 	public void InputSetting()
@@ -26,8 +26,6 @@ public class NetworkPlayerInput : ExpansionNetworkBehaviour, IPlayerInput, IInte
 
 	public void OnRegisterEvent(HASH_INPUT_PLAYER key, InputParams action)
 	{
-		Debug_S.Log(IsOwner);
-
 		if (!IsOwner) return;
 
 		_inputContainer.OnRegisterEvent(key, action);
@@ -35,7 +33,6 @@ public class NetworkPlayerInput : ExpansionNetworkBehaviour, IPlayerInput, IInte
 
 	public void RemoveRegisterEvent(HASH_INPUT_PLAYER key, InputParams action)
 	{
-		Debug_S.Log(IsOwner);
 		if (!IsOwner) return;
 
 		_inputContainer.RemoveRegisterEvent(key, action);
@@ -43,7 +40,6 @@ public class NetworkPlayerInput : ExpansionNetworkBehaviour, IPlayerInput, IInte
 
 	public void OnLeftClickInput(InputAction.CallbackContext context)
 	{
-		Debug_S.Log(IsOwner);
 		if (!IsOwner) return;
 
 		_inputContainer.InputRunning(HASH_INPUT_PLAYER.LeftClick, context, true);
@@ -51,7 +47,6 @@ public class NetworkPlayerInput : ExpansionNetworkBehaviour, IPlayerInput, IInte
 
 	public void OnSpaceClickInput(InputAction.CallbackContext context)
 	{
-		Debug_S.Log(IsOwner);
 		if (!IsOwner) return;
 
 		_inputContainer.InputRunning(HASH_INPUT_PLAYER.Space, context, false);

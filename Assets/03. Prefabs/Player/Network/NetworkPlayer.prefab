@@ -466,6 +466,7 @@ GameObject:
   - component: {fileID: 1267586398213618018}
   - component: {fileID: 6956005057536506154}
   - component: {fileID: 7281318117790362922}
+  - component: {fileID: 9137636346686207575}
   - component: {fileID: 2748015618285933986}
   m_Layer: 0
   m_Name: NetworkPlayer
@@ -505,7 +506,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3744507426
+  GlobalObjectIdHash: 768635619
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -788,6 +789,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SkinName: Face_Default
+--- !u!114 &9137636346686207575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5699786010001815303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7aba0fb683501e943bbf17918adefa3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2748015618285933986
 MonoBehaviour:
   m_ObjectHideFlags: 0

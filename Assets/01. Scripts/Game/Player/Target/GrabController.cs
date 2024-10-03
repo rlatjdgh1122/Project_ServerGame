@@ -1,7 +1,7 @@
 using Define;
 using Seongho.InputSystem;
 
-public class GrabController : ExpansionMonoBehaviour, ISetupHandler, IPlayerStopHandler, IInterfaceNetworkHandler
+public class GrabController : ExpansionMonoBehaviour, ISetupHandler, IPlayerStopHandler, INetworkSpawnHandler
 {
 	private IInputHandler<HASH_INPUT_PLAYER> _inputHandler = null;
 	private IGrabHandler _grabHandler = null;

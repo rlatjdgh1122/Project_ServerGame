@@ -6,13 +6,13 @@ using UnityEngine;
 
 public class NetworkInitalizer : ExpansionNetworkBehaviour
 {
-	private List<IInterfaceNetworkHandler> _interfaceList = new();
+	private List<INetworkSpawnHandler> _interfaceList = new();
 
 	public override void OnNetworkSpawn()
 	{
 		ComponentList list = new ComponentList(GetComponentsInChildren<Component>());
 
-		_interfaceList = GetComponentsInChildren<IInterfaceNetworkHandler>().ToList();
+		_interfaceList = GetComponentsInChildren<INetworkSpawnHandler>().ToList();
 
 		foreach (var item in _interfaceList)
 		{

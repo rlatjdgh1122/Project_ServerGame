@@ -1,7 +1,7 @@
 using Seongho.InputSystem;
 using System.Collections.Generic;
 
-public class StopController : ExpansionMonoBehaviour, ISetupHandler, IInterfaceNetworkHandler
+public class StopController : ExpansionMonoBehaviour, ISetupHandler, INetworkSpawnHandler
 {
 	private List<IPlayerStopHandler> _stopHandlerList = new();
 
