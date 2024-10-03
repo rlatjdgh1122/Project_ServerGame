@@ -145,9 +145,6 @@ public class ResourceManager : MonoSingleton<ResourceManager>
             AddAsset(key, result);
             AddLabelAsset(_curLabelName, key, result);
 
-            //매핑되기 전에 데이터가 지워지는 경우가 생겨서 0.02초 뒤에 삭제하는걸로 변경
-            CoroutineUtil.CallWaitForSeconds(0.02f, () => Addressables.Release(data));
-
             _curCount++;
             if (_curCount == _targetCount)
             {

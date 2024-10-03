@@ -22,21 +22,15 @@ public class PlayerFaceController : ExpansionMonoBehaviour, ISetupHandler, IPlay
     {
         List<Sprite> spriteList = ResourceManager.Instance.GetAssetsByLabelName<Sprite>(SkinName);
 
-        //foreach (Sprite sprite in spriteList)
-        //{
-        //    if (Enum.TryParse(sprite.name, out FaceType type))
-        //    {
-        //        _typeToSpriteDic.TryAdd(type, sprite);
-        //    }
-
-        //}//end foreach
-
-        for (int i = 0; i < spriteList.Count; i++)
+        foreach (Sprite sprite in spriteList)
         {
-            _typeToSpriteDic.Add((FaceType)i, spriteList[i]);
-        }
+            if (Enum.TryParse(sprite.name, out FaceType type))
+            {
+                _typeToSpriteDic.TryAdd(type, sprite);
+            }
 
-        Debug_S.LogError("¼¼ÆÃ¿Ï");
+        }//end foreach
+
     }
 
     void IGameFlowHandler.OnGameEnd()
