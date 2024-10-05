@@ -7,6 +7,7 @@ namespace Seongho.TimerSystem
 		Running,
 		Stopped,
 		Ended,
+		Reset,
 		Delete,
 	}
 }

@@ -18,5 +18,6 @@ public class GameManager : MonoBehaviour
 		{
 			NetworkGameManager.Instance.GameStart();
 		}
+
 	}
 }
