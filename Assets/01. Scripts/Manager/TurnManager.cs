@@ -17,7 +17,7 @@ public enum TurnType : sbyte
 public class TurnManager : NetworkMonoSingleton<TurnManager>
 {
 	public TurnType StartType = TurnType.None;
-	public bool IsMyTurn => _turnTypeNV?.Value == PlayerManager.Instance.GetMyType();
+	public bool IsMyTurn => _turnTypeNV?.Value == TurnType.None;
 
 	private NetworkVariable<TurnType> _turnTypeNV = new();
 	private int _turnIdx = -1;

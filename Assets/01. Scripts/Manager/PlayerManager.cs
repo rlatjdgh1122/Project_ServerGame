@@ -4,19 +4,26 @@ using Unity.Netcode;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
-public class PlayerManager : MonoSingleton<PlayerManager>
+public class PlayerManager : NetworkMonoSingleton<PlayerManager>
 {
     [SerializeField] private Player _playerPrefab = null;
     [SerializeField] private TurnType _myType = TurnType.None;
 
-    public void SetMyType(TurnType type)
+    public void SetTurnType(TurnType type)
     {
-        _myType = type;
-    }
+        if (!IsOwner) return;
 
-    public TurnType GetMyType()
-    {
-        return _myType;
+        _myType = type;
+        UserData? data = HostSingle.Instance.NetServer.GetUserDataByClientID(OwnerClientId);
+
+        UserData newData = new UserData
+        {
+            authId = data.Value.authId,
+            nickName = data.Value.nickName,
+            turnType = type,
+        };
+
+        HostSingle.Instance.NetServer.SetUserDataByClientId(OwnerClientId, newData);
     }
 
     public Player SpawnPlayer(ulong id)
