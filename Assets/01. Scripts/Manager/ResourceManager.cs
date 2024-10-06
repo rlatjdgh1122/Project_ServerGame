@@ -1,4 +1,3 @@
-using ExtensionMethod.Object;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -17,12 +16,8 @@ public class ResourceManager : MonoSingleton<ResourceManager>
     private MultiKeyDictionary<string, Type, IDataContainer> _labelToDataContainerDic = new();    //라벨과 타입에 해당되는 에셋들을 저장하는 딕셔너리
     private Dictionary<Type, IDataContainer> _typeToDataContainerDic = new();                     //타입에 해당되는 에셋들을 저장하는 딕셔너리
 
-<<<<<<< Updated upstream
     private string _curLabelName = "";       //현재 라벨 이름을 저장해준다.
     private MethodInfo _cachedMethod = null; //리플렉션 중복을 막기 위해 미리 캐시해준다.
-=======
-	private MethodInfo _cachedMethod = null; //리플렉션 중복을 막기 위해 미리 캐시해준다.
->>>>>>> Stashed changes
 
     private int _curCount = 0;
     private int _targetCount = 0;
@@ -86,7 +81,6 @@ public class ResourceManager : MonoSingleton<ResourceManager>
     {
         List<T> list = new List<T>();
 
-<<<<<<< Updated upstream
         if (_labelToDataContainerDic.TryGetValue(labelName, out var data))
         {
             if (data.TryGetValue(typeof(T), out var container))
@@ -96,20 +90,6 @@ public class ResourceManager : MonoSingleton<ResourceManager>
                     if (item is T result)
                     {
                         list.Add(result);
-=======
-		if (_labelToDataContainerDic.TryGetValue(labelName, out var data))
-		{
-			//컨테이너가 null임
-
-			if (data.TryGetValue(typeof(T), out var container))
-			{
-				Debug.Log($"GetTpye : {typeof(T)}");
-				foreach (var item in container.GetAllValues())
-				{
-					if (item is T result)
-					{
-						list.Add(result);
->>>>>>> Stashed changes
 
                     } //end if
 
@@ -121,7 +101,6 @@ public class ResourceManager : MonoSingleton<ResourceManager>
         return list;
     }
 
-<<<<<<< Updated upstream
     /// <summary>
     /// 라벨을 등록해준다.
     /// 사용 예시) 스킨을 살 경우 등록해줌
@@ -165,60 +144,6 @@ public class ResourceManager : MonoSingleton<ResourceManager>
 
             AddAsset(key, result);
             AddLabelAsset(_curLabelName, key, result);
-=======
-	/// <summary>
-	/// 라벨을 등록해준다.
-	/// 사용 예시) 스킨을 살 경우 등록해줌
-	public void OnRegisterLabel(string label)
-	{
-		var handle = Addressables.LoadResourceLocationsAsync(label);
-		handle.Completed += (op) => OnLoadLabelListCompleted(op, label);
-	}
-
-	/// <summary>
-	/// 라벨에 포함되어 있는 에셋을 성공적으로 가져올 경우 작업을 처리해주는 함수
-	/// </summary>
-	private void OnLoadLabelListCompleted(AsyncOperationHandle<IList<IResourceLocation>> handle, string label)
-	{
-		_targetCount += handle.Result.Count;
-
-		if (handle.Status == AsyncOperationStatus.Failed)
-		{
-			Debug.LogError($"{label}을 가져오는 데에 실패하였습니다.");
-			return;
-		}
-
-		foreach (IResourceLocation result in handle.Result)
-		{
-			//Debug_S.Log($"ResourceType : {result.ResourceType}");
-
-			//제너릭 메서드는 컴파일 시에 타입을 고정되기 때문에
-			//리플렉션을 사용하여 result.ResourceType 타입에 따라 런타입에 동적으로 전달해준다.
-			_cachedMethod?.MakeGenericMethod(result.ResourceType)
-						 .Invoke(this, new object[] { result.PrimaryKey, label });
-		} //end foreach
-	}
-
-	/// <summary>
-	/// 리플렉션할 때 캐싱해줄 함수, 데이터를 로드해주고 딕셔너리에 추가해준다.
-	/// </summary>
-	private void DataModify<T>(string key, string label) where T : class
-	{
-		AsyncOperationHandle handle = Addressables.LoadAssetAsync<T>(key);
-
-		// 완료 시점에 실행할 내용 callback으로 등록
-		handle.Completed += (data) =>
-		{
-			//if (handle.Result.GetType() == typeof(T))
-			{
-				//Debug_S.Log(typeof(T) + " : " + data.Result.GetType());
-				T result = data.Result as T;
-				AddAsset(key, result);
-				AddLabelAsset(label, key, result);
-
-				Addressables.Release(data);
-			}
->>>>>>> Stashed changes
 
             _curCount++;
             if (_curCount == _targetCount)
