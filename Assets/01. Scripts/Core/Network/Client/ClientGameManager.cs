@@ -40,7 +40,7 @@ public class ClientGameManager
 
     }
 
-    public async Task StartClientAsync(string joinCode, UserData data)
+    public async Task StartClientAsync(string joinCode, GameData data)
     {
 
         try

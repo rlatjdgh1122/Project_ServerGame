@@ -11,111 +11,109 @@ using UnityEngine.SceneManagement;
 
 public class AppController : MonoSingleton<AppController>
 {
-    [SerializeField] private ClientSingle _clientPrefab = null;
-    [SerializeField] private HostSingle _hostPrefab = null;
+	[SerializeField] private ClientSingle _clientPrefab = null;
+	[SerializeField] private HostSingle _hostPrefab = null;
 
-    public UnityEvent OnInitCompletedEvent = null;
-    public UnityEvent OnInitFailedEvent = null;
+	public UnityEvent OnInitCompletedEvent = null;
+	public UnityEvent OnInitFailedEvent = null;
 
-    public async void Start()
-    {
-        await UnityServices.InitializeAsync();
+	public async void Start()
+	{
+		await UnityServices.InitializeAsync();
 
-        var state = await AuthenticationWrapper.DoAuth(3);
+		var state = await AuthenticationWrapper.DoAuth(3);
 
-        if (state != AuthState.Authenticated)
-        {
+		if (state != AuthState.Authenticated)
+		{
 
-            OnInitFailed();
-            return;
+			OnInitFailed();
+			return;
 
-        }
+		}
 
-        HostSingle host = Instantiate(_hostPrefab, transform);
-        host.CreateHost();
+		HostSingle host = Instantiate(_hostPrefab, transform);
+		host.CreateHost();
 
-        ClientSingle client = Instantiate(_clientPrefab, transform);
-        client.CreateClient();
+		ClientSingle client = Instantiate(_clientPrefab, transform);
+		client.CreateClient();
 
-        OnInitComplete();
+		OnInitComplete();
 
-    }
+	}
 
-    private void OnInitFailed()
-    {
-        OnInitFailedEvent?.Invoke();
-    }
+	private void OnInitFailed()
+	{
+		OnInitFailedEvent?.Invoke();
+	}
 
-    private void OnInitComplete()
-    {
+	private void OnInitComplete()
+	{
 
-        OnInitCompletedEvent?.Invoke();
+		OnInitCompletedEvent?.Invoke();
 
-    }
+	}
 
-    public async Task<bool> StartHostAsync(string username, string lobbyName, bool roomState = false)
-    {
+	public async Task<bool> StartHostAsync(string username, string lobbyName, bool roomState = false)
+	{
 
-        return await HostSingle.Instance.GameManager.StartHostAsync(lobbyName, GetUserData(username), roomState);
+		return await HostSingle.Instance.GameManager.StartHostAsync(lobbyName, GetUserData(username), roomState);
 
-    }
+	}
 
-    public async Task StartClientAsync(string username, string joinCode)
-    {
+	public async Task StartClientAsync(string username, string joinCode)
+	{
 
-        await ClientSingle.Instance.GameManager.StartClientAsync(joinCode, GetUserData(username));
+		await ClientSingle.Instance.GameManager.StartClientAsync(joinCode, GetUserData(username));
 
-    }
+	}
 
-    public UserData GetUserData(string username, TurnType turnType = default)
-    {
+	public GameData GetUserData(string userName)
+	{
 
-        return new UserData
-        {
+		return new GameData
+		{
 
-            nickName = username,
-            authId = AuthenticationService.Instance.PlayerId,
-            turnType = turnType,
+			playerName = userName,
+			authId = AuthenticationService.Instance.PlayerId
+		};
 
-        };
+	}
 
-    }
+	public async Task<List<Lobby>> GetLobbyList()
+	{
 
-    public async Task<List<Lobby>> GetLobbyList()
-    {
+		try
+		{
 
-        try
-        {
+			QueryLobbiesOptions options = new QueryLobbiesOptions();
+			options.Count = 20;
+			options.Filters = new List<QueryFilter>()
+			{
 
-            QueryLobbiesOptions options = new QueryLobbiesOptions();
-            options.Count = 20;
-            options.Filters = new List<QueryFilter>()
-            {
+				new QueryFilter(
+					field: QueryFilter.FieldOptions.AvailableSlots,
+					op: QueryFilter.OpOptions.GT,
+					value: "0"),
+				new QueryFilter(
+					field: QueryFilter.FieldOptions.IsLocked,
+					op: QueryFilter.OpOptions.EQ,
+					value: "0"),
 
-                new QueryFilter(
-                    field: QueryFilter.FieldOptions.AvailableSlots,
-                    op: QueryFilter.OpOptions.GT,
-                    value: "0"),
-                new QueryFilter(
-                    field: QueryFilter.FieldOptions.IsLocked,
-                    op: QueryFilter.OpOptions.EQ,
-                    value: "0"),
-
-            };
+			};
 
 
-            QueryResponse lobbies = await LobbyService.Instance.QueryLobbiesAsync(options);
-            return lobbies.Results;
+			QueryResponse lobbies = await LobbyService.Instance.QueryLobbiesAsync(options);
+			return lobbies.Results;
 
-        }
-        catch (LobbyServiceException ex)
-        {
+		}
+		catch (LobbyServiceException ex)
+		{
 
-            Debug.LogError(ex);
-            return new List<Lobby>();
+			Debug.LogError(ex);
+			return new List<Lobby>();
 
-        }
+		}
 
-    }
+	}
 
 }

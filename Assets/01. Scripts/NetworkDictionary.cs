@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Unity.Netcode;
+using UnityEngine;
 
-public readonly struct SerializeKeyValuePair<TKey, TValue> : INetworkSerializable, IEquatable<SerializeKeyValuePair<TKey, TValue>>
-	where TKey : unmanaged, INetworkSerializable, IEquatable<TKey>
-	where TValue : unmanaged, INetworkSerializable, IEquatable<TValue>
+public readonly struct SerializeKeyValuePair<TKey, TValue> : IEquatable<SerializeKeyValuePair<TKey, TValue>>
+	where TKey : unmanaged, IEquatable<TKey>
+	where TValue : unmanaged, IEquatable<TValue>
 {
 	public TKey Key { get; }
 	public TValue Value { get; }
@@ -17,17 +19,65 @@ public readonly struct SerializeKeyValuePair<TKey, TValue> : INetworkSerializabl
 
 	public bool Equals(SerializeKeyValuePair<TKey, TValue> other)
 	{
-		return true;
+		Vector3 a, b;
+
+		return Key.Equals(other.Key) && Value.Equals(other);
 	}
 
-	public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+
+
+	/*public ArraySegment<byte> Serialize()
 	{
-		throw new NotImplementedException();
+		//일단 1024 요청해두고
+		ArraySegment<byte> segment = SendBufferHelper.Open(1024);
+		Span<byte> s = new Span<byte>(segment.Array, segment.Offset, segment.Count); //세그먼트를 span으로 찝어주고
+		ushort count = 0;
+		bool success = true;
+
+		//주의. string은 Length가 실제 Length가 아니라 바이트로 변환하면 글자당 2바이트로 나온다
+		ushort nameLen = (ushort)Encoding.UTF8.GetByteCount(Key);
+		success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length), nameLen); //길이 기록하고
+		count += sizeof(ushort);
+
+		byte[] nameByte = Encoding.UTF8.GetBytes(username);
+		Array.Copy(nameByte, 0, segment.Array, segment.Offset + count, nameByte.Length);
+		count += nameLen;
+
+		ushort userAuthIdLen = (ushort)Encoding.UTF8.GetByteCount(userAuthId);
+		success &= BitConverter.TryWriteBytes(s.Slice(count, s.Length - count), userAuthIdLen); //길이 기록하고
+		count += sizeof(ushort);
+
+		byte[] userAuthIdByte = Encoding.UTF8.GetBytes(userAuthId);
+		Array.Copy(userAuthIdByte, 0, segment.Array, segment.Offset + count, userAuthIdByte.Length);
+		count += userAuthIdLen;
+
+		if (!success)
+		{
+			Debug.LogError("패킷 직렬화 오류");
+			return null;
+		}
+
+		return SendBufferHelper.Close(count);
 	}
+
+	public void Deserialize(byte[] payload)
+	{
+		ReadOnlySpan<byte> s = new ReadOnlySpan<byte>(payload, 0, payload.Length);
+		ushort count = 0;
+		ushort nameLen = BitConverter.ToUInt16(s.Slice(count, s.Length - count)); //앞에 2바이트
+		count += sizeof(ushort);
+		username = Encoding.UTF8.GetString(s.Slice(count, nameLen));
+		count += nameLen;
+
+		ushort userAuthLen = BitConverter.ToUInt16(s.Slice(count, s.Length - count));
+		count += sizeof(ushort);
+		userAuthId = Encoding.UTF8.GetString(s.Slice(count, userAuthLen));
+		count += userAuthLen;
+	}*/
 }
 
 public class NetworkDictionary<TKey, TValue> : NetworkVariableBase
-	where TKey : unmanaged, INetworkSerializable,IEquatable<TKey>
+	where TKey : unmanaged, INetworkSerializable, IEquatable<TKey>
 	where TValue : unmanaged, INetworkSerializable, IEquatable<TValue>
 {
 	private List<SerializeKeyValuePair<TKey, TValue>> internalList = new List<SerializeKeyValuePair<TKey, TValue>>();
@@ -59,6 +109,7 @@ public class NetworkDictionary<TKey, TValue> : NetworkVariableBase
 		bool found = false;
 		for (int i = 0; i < internalList.Count; i++)
 		{
+			//만약 값이 존재한다면 교체해주고
 			if (internalList[i].Key.Equals(key))
 			{
 				internalList[i] = new SerializeKeyValuePair<TKey, TValue>(key, value);
@@ -67,6 +118,7 @@ public class NetworkDictionary<TKey, TValue> : NetworkVariableBase
 			}
 		}
 
+		//존재하지 않다면 추가해줌
 		if (!found)
 		{
 			internalList.Add(new SerializeKeyValuePair<TKey, TValue>(key, value));

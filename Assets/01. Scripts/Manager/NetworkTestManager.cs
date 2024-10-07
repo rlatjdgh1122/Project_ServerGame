@@ -11,7 +11,7 @@ public class NetworkTestManager : MonoBehaviour
 
     public async void CreateRoom()
     {
-        await HostSingle.Instance.GameManager.StartHostAsync(Guid.NewGuid().ToString(), AppController.Instance.GetUserData("ADSF", TurnType.None));
+        await HostSingle.Instance.GameManager.StartHostAsync(Guid.NewGuid().ToString(), AppController.Instance.GetUserData("ADSF"));
 
         NetworkManager.Singleton.SceneManager.LoadScene(SceneName, LoadSceneMode.Single);
     }
@@ -19,7 +19,7 @@ public class NetworkTestManager : MonoBehaviour
     public async void JoinRoom()
     {
 
-        await ClientSingle.Instance.GameManager.StartClientAsync(_inputField.text, AppController.Instance.GetUserData("ADSF", TurnType.None));
+        await ClientSingle.Instance.GameManager.StartClientAsync(_inputField.text, AppController.Instance.GetUserData("ADSF"));
 
         NetworkManager.Singleton.SceneManager.LoadScene(SceneName, LoadSceneMode.Single);
     }

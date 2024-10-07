@@ -13,17 +13,17 @@ public class PlayerManager : NetworkMonoSingleton<PlayerManager>
     {
         if (!IsOwner) return;
 
-        _myType = type;
+       /* _myType = type;
         UserData? data = HostSingle.Instance.NetServer.GetUserDataByClientID(OwnerClientId);
 
         UserData newData = new UserData
         {
             authId = data.Value.authId,
-            nickName = data.Value.nickName,
+            playerName = data.Value.playerName,
             turnType = type,
         };
 
-        HostSingle.Instance.NetServer.SetUserDataByClientId(OwnerClientId, newData);
+        HostSingle.Instance.NetServer.SetUserDataByClientId(OwnerClientId, newData);*/
     }
 
     public Player SpawnPlayer(ulong id)
