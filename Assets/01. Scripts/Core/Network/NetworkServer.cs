@@ -10,7 +10,7 @@ public class GameData
 	public string playerName;
 	public string authId;
 
-	public ArraySegment<byte> Serialize()
+	public ArraySegment<byte> Serialize()	
 	{
 		//일단 1024 요청해두고
 		ArraySegment<byte> segment = SendBufferHelper.Open(1024);
