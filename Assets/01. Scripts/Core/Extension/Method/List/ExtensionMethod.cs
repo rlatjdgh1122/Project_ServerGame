@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 
 namespace ExtensionMethod.List
 {
@@ -145,6 +146,18 @@ namespace ExtensionMethod.List
 
 			result = default;
 			return false;
+		}
+
+		public static int GetIdx<T>(this List<T> list, Predicate<T> func)
+		{
+			for (int i = 0; i < list.Count; ++i)
+			{
+				if (func(list[i])) continue;
+
+				return i;
+			}
+
+			return -1;
 		}
 
 		public static List<TResult> Convert<TSource, TResult>(this List<TSource> source, Func<TSource, TResult> selector)

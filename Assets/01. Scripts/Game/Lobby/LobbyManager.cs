@@ -90,6 +90,10 @@ public class LobbyManager : ExpansionMonoBehaviour, ILobbyManager
 		{
 			button.OnConfirm();
 
+			int idx = _userDataList.GetIdx(target => target.clientId == data.clientId);
+			_userDataList[idx] = data;
+
+
 			//내가 고를려고 했던 것을 골랐을때 None으로 취소시켜줌
 			if (data.turnType == SelectTurnType)
 			{

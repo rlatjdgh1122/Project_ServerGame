@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class UserDataManager : NetworkMonoSingleton<UserDataManager>
 {
-	public NetworkList<UserData> UserDataList;
+	public NetworkList<UserData> _userDataList;
 
 	public event Action<UserData> OnAddUserEvent = null;
 	public event Action<UserData> OnRemoveUserEvent = null;
@@ -14,7 +14,7 @@ public class UserDataManager : NetworkMonoSingleton<UserDataManager>
 	
 	public override void Awake()
 	{
-		UserDataList = new();
+		_userDataList = new();
 	}
 
 	public override void OnNetworkSpawn()
@@ -22,10 +22,10 @@ public class UserDataManager : NetworkMonoSingleton<UserDataManager>
 		Debug.Log("WQEr");
 		if (IsClient)
 		{
-			UserDataList.OnListChanged += HandleUserListChanged;
+			_userDataList.OnListChanged += HandleUserListChanged;
 
 			//기존에 있는 녀석들도 추가
-			foreach (var user in UserDataList)
+			foreach (var user in _userDataList)
 			{
 				HandleUserListChanged(new NetworkListEvent<UserData>
 				{
@@ -50,7 +50,7 @@ public class UserDataManager : NetworkMonoSingleton<UserDataManager>
 	{
 		if (IsClient)
 		{
-			UserDataList.OnListChanged -= HandleUserListChanged;
+			_userDataList.OnListChanged -= HandleUserListChanged;
 		}
 
 		if (IsServer)
@@ -63,7 +63,7 @@ public class UserDataManager : NetworkMonoSingleton<UserDataManager>
 
 	public UserData GetUserData(ulong clientID)
 	{
-		return UserDataList[FindIndex(clientID)];
+		return _userDataList[FindIndex(clientID)];
 	}
 
 	public void ColorConfirm(TurnType turn)
@@ -77,9 +77,9 @@ public class UserDataManager : NetworkMonoSingleton<UserDataManager>
 	{
 		int idx = FindIndex(clientID);
 
-		var oldData = UserDataList[idx];
+		var oldData = _userDataList[idx];
 
-		UserDataList[idx] = new UserData
+		_userDataList[idx] = new UserData
 		{
 			clientId = clientID,
 			playerName = oldData.playerName,
@@ -113,20 +113,20 @@ public class UserDataManager : NetworkMonoSingleton<UserDataManager>
 			turnType = TurnType.None,
 		};
 
-		UserDataList.Add(newUser);
+		_userDataList.Add(newUser);
 	}
 
 	private void HandleUserLeft(GameData data, ulong clientID)
 	{
-		if (UserDataList == null) return;
+		if (_userDataList == null) return;
 
-		foreach (var user in UserDataList)
+		foreach (var user in _userDataList)
 		{
 			if (user.clientId != clientID) continue;
 
 			try
 			{
-				UserDataList.Remove(user);
+				_userDataList.Remove(user);
 			}
 			catch (Exception e)
 			{
@@ -155,9 +155,9 @@ public class UserDataManager : NetworkMonoSingleton<UserDataManager>
 
 	private int FindIndex(ulong clientID)
 	{
-		for (int i = 0; i < UserDataList.Count; ++i)
+		for (int i = 0; i < _userDataList.Count; ++i)
 		{
-			if (UserDataList[i].clientId != clientID) continue;
+			if (_userDataList[i].clientId != clientID) continue;
 
 			return i;
 		}
