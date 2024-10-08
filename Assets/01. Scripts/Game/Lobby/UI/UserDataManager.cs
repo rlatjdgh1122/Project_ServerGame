@@ -11,7 +11,7 @@ public class UserDataManager : NetworkMonoSingleton<UserDataManager>
 	public event Action<UserData> OnAddUserEvent = null;
 	public event Action<UserData> OnRemoveUserEvent = null;
 	public event Action<UserData> OnValueChangedUserEvent = null;
-
+	
 	public override void Awake()
 	{
 		UserDataList = new();
