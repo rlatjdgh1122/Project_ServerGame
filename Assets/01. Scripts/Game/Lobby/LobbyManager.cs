@@ -1,3 +1,4 @@
+using ExtensionMethod.List;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using UnityEngine.UI;
 public class LobbyManager : ExpansionMonoBehaviour, ILobbyManager
 {
 	public Button GameStartButton = null;
+	public Button ColorSelectButton = null;
 
 	public UnityEvent OnSucceededGameStartEvent = null;
 	public UnityEvent OnFailedGameStartEvent = null;
@@ -21,6 +23,8 @@ public class LobbyManager : ExpansionMonoBehaviour, ILobbyManager
 
 	private void Awake()
 	{
+		ColorSelectButton.interactable = false;
+
 		foreach (var button in ColorButtonList)
 		{
 			button.OnClickEvent += HandleSelectedeColor;
@@ -47,9 +51,11 @@ public class LobbyManager : ExpansionMonoBehaviour, ILobbyManager
 
 	}
 
-	private void HandleSelectedeColor(TurnType type)
+	private void HandleSelectedeColor(LobbyColorButton button)
 	{
-		SelectTurnType = type;
+		SelectTurnType = button.ColorType;
+		ColorSelectButton.interactable = true;
+		ColorButtonList.ObjExcept(button, btns => btns.OnDeSelected());
 	}
 
 	/// <summary>
@@ -57,6 +63,8 @@ public class LobbyManager : ExpansionMonoBehaviour, ILobbyManager
 	/// </summary>
 	public void OnColorConfirm()
 	{
+		//선택했으면 다 꺼줌
+		ColorButtonList.ForEach(btn => btn.SetInteractable(true));
 		UserDataManager.Instance.ColorConfirm(SelectTurnType);
 	}
 
@@ -69,7 +77,14 @@ public class LobbyManager : ExpansionMonoBehaviour, ILobbyManager
 	{
 		if (_colorToButtonDic.TryGetValue(data.turnType, out var button))
 		{
-			button.Button.interactable = false;
+			button.OnConfirm();
+
+			//내가 고를려고 했던 것을 골랐을때 None으로 취소시켜줌
+			if (data.turnType == SelectTurnType)
+			{
+				SelectTurnType = TurnType.None;
+				ColorSelectButton.interactable = false;
+			}
 		}
 	}
 
@@ -80,13 +95,52 @@ public class LobbyManager : ExpansionMonoBehaviour, ILobbyManager
 	{
 		if (_colorToButtonDic.TryGetValue(data.turnType, out var button))
 		{
-			button.Button.interactable = true;
+			button.OnLeave();
 		}
 	}
 
 
 	public void HandleGameStart()
 	{
+		if (CheckAllReady())
+		{
+			OnSucceededGameStartEvent?.Invoke();
+		}
+		else
+		{
+			foreach(var item in _notReadyUserList)
+			{
+				Debug.Log(item.playerName);
+			}
+
+			OnFailedGameStartEvent?.Invoke();
+		}
+
+	}
+
+	private List<UserData> _notReadyUserList = new List<UserData>();
+
+	/// <summary>
+	/// 모든 플레이어가 준비가 되었는지 확인하는 함수
+	/// </summary>
+	private bool CheckAllReady()
+	{
+		_notReadyUserList.TryClear();
+
+		bool result = true;
+
+		foreach (UserData data in UserDataManager.Instance.UserDataList)
+		{
+			//한놈이라도 턴을 선택안했다면
+			if (data.turnType == TurnType.None)
+			{
+				_notReadyUserList.Add(data);
+				result = false;
+				break;
+			}
+		}
+
+		return result;
 
 	}
 }

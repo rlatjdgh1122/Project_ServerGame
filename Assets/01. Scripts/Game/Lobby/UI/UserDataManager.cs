@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -90,27 +92,6 @@ public class UserDataManager : NetworkMonoSingleton<UserDataManager>
 	[ServerRpc(RequireOwnership = false)]
 	public void GameStartServerRpc()
 	{
-
-	}
-
-	/// <summary>
-	/// 모든 플레이어가 준비가 되었는지 확인하는 함수
-	/// </summary>
-	private bool CheckAllReady()
-	{
-		bool result = true;
-
-		foreach (var user in UserDataList)
-		{
-			//한놈이라도 턴을 선택안했다면
-			if (user.turnType == TurnType.None)
-			{
-				result = false;
-				break;
-			}
-		}
-
-		return result;
 
 	}
 

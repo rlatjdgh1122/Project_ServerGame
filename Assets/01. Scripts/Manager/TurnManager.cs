@@ -9,8 +9,8 @@ public enum TurnType : sbyte
 	None = -1,
 	Red,
 	Blue,
-	//Yellow,
-	//Green,
+	Yellow,
+	Green,
 	End
 }
 
