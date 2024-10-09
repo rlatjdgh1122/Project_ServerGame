@@ -83,8 +83,8 @@ public class NetworkServer : IDisposable
 		string json = Encoding.UTF8.GetString(req.Payload);
 		var userData = JsonUtility.FromJson<GameData>(json);
 
-		_clientToAuthContainer.Add(req.ClientNetworkId, userData.authId);
-		_authIdToUserDataContainer.Add(userData.authId, userData);
+		_clientToAuthContainer.TryAdd(req.ClientNetworkId, userData.authId);
+		_authIdToUserDataContainer.TryAdd(userData.authId, userData);
 
 		res.Approved = true;
 		res.CreatePlayerObject = false;

@@ -1,3 +1,4 @@
+using ExtensionMethod.Dictionary;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -28,14 +29,23 @@ public class UserNameContainer : ExpansionMonoBehaviour
 
 	private void OnChangedUserEvent(UserData data)
 	{
-		var text = _clientIDToTextDic[data.clientId];
-		text.SetColor(data.turnType);
+		if (_clientIDToTextDic.TryGetValue(data.clientId, out var result))
+		{
+			result.SetColor(data.turnType);
+			_clientIDToTextDic[data.clientId] = result;
 
-		_clientIDToTextDic[data.clientId] = text;
+		} //end if
 	}
 
 	private void OnRemoveUserEvent(UserData data)
 	{
-		_clientIDToTextDic.Remove(data.clientId);
+		_clientIDToTextDic.TryRemove(data.clientId, text => Destroy(text.gameObject));
+	}
+
+	private void OnDestroy()
+	{
+		UserDataManager.Instance.OnAddUserEvent -= OnAddUserEvent;
+		UserDataManager.Instance.OnValueChangedUserEvent -= OnChangedUserEvent;
+		UserDataManager.Instance.OnRemoveUserEvent -= OnRemoveUserEvent;
 	}
 }

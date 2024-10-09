@@ -81,7 +81,6 @@ public class HostGameManager : IDisposable
 			NetworkManager.Singleton.NetworkConfig.ConnectionData = Encoding.UTF8.GetBytes(userJson);
 			NetworkManager.Singleton.StartHost();
 
-			Debug.Log(_joinCode);
 			OnRoomCreated?.Invoke(_joinCode);
 
 			return true;

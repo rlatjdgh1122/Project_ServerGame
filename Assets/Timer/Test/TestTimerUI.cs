@@ -20,7 +20,7 @@ public class TestTimerUI : ExpansionMonoBehaviour, ITimerEventHandler
         timer = TimerSystem.GetTimer("테스트");
 
         //ITimerEventHandler를 상속받은 후 타이머와 이벤트를 연결해준다. (연결해야 이벤트 함수를 사용 가능)
-        TimerSystem.OnResterTimerEvent(timer, this);
+        TimerSystem.OnResiterTimerEvent(timer, this);
     }
 
     private void Update()

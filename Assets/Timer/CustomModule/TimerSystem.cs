@@ -17,10 +17,10 @@ namespace Seongho.TimerSystem
 			CreateExecutor();
 		}
 
-        /// <summary>
-        /// MonoBehaviour와 GameObject의 기능을 사용하기 위해 TimerExecutor 형태의 오브젝트를 하나 생성해준다.
-        /// </summary>
-        private static void CreateExecutor()
+		/// <summary>
+		/// MonoBehaviour와 GameObject의 기능을 사용하기 위해 TimerExecutor 형태의 오브젝트를 하나 생성해준다.
+		/// </summary>
+		private static void CreateExecutor()
 		{
 			if (_timerObj != null)
 			{
@@ -35,7 +35,10 @@ namespace Seongho.TimerSystem
 		/// <summary>
 		/// 타이머를 생성해주는 함수
 		/// </summary>
-		public static ITimer CreateTimer(string timerName, float timer)
+		/// <param name="timerName">타이머의 이름</param>
+		/// <param name="timer">타이머 시간</param>
+		/// <param name="tick">RunningEvent 호출 주기</param>
+		public static ITimer CreateTimer(string timerName, float timer, float tick = 0.02f)
 		{
 			if (_nameToTimerDic.ContainsKey(timerName))
 			{
@@ -45,7 +48,7 @@ namespace Seongho.TimerSystem
 
 			} //end if
 
-			ITimer iTimer = _timerExecutor.CreateTimer(timerName, timer);
+			ITimer iTimer = _timerExecutor.CreateTimer(timerName, timer, tick);
 			_nameToTimerDic.Add(timerName, iTimer);
 
 			return iTimer;
@@ -102,10 +105,10 @@ namespace Seongho.TimerSystem
 			} // end foreach
 		}
 
-        /// <summary>
-        /// 모든 타이머를 다시 시작하는 함수 
-        /// </summary>
-        public static void ReStartAllTimer()
+		/// <summary>
+		/// 모든 타이머를 다시 시작하는 함수 
+		/// </summary>
+		public static void ReStartAllTimer()
 		{
 			foreach (ITimer item in _nameToTimerDic.Values)
 			{
@@ -114,10 +117,10 @@ namespace Seongho.TimerSystem
 			} // end foreach
 		}
 
-        /// <summary>
-        /// 모든 타이머를 리셋하는 함수 
-        /// </summary>
-        public static void ResetAllTimer()
+		/// <summary>
+		/// 모든 타이머를 리셋하는 함수 
+		/// </summary>
+		public static void ResetAllTimer()
 		{
 			foreach (ITimer item in _nameToTimerDic.Values)
 			{
@@ -126,10 +129,10 @@ namespace Seongho.TimerSystem
 			} // end foreach
 		}
 
-        /// <summary>
-        /// 모든 타이머를 지우는 함수 
-        /// </summary>
-        public static void DeleteAllTimer()
+		/// <summary>
+		/// 모든 타이머를 지우는 함수 
+		/// </summary>
+		public static void DeleteAllTimer()
 		{
 			foreach (ITimer item in _nameToTimerDic.Values)
 			{
@@ -143,27 +146,27 @@ namespace Seongho.TimerSystem
 		/// <summary>
 		/// 이벤트 구독을 대신해주는 유틸 기능 함수
 		/// </summary>
-		public static void OnResterTimerEvent(ITimer timer, ITimerEventHandler timerEventHandler)
+		public static void OnResiterTimerEvent(ITimer timer, ITimerEventHandler timerEventHandler)
 		{
-			timer.OnStartTimerEvent    += timerEventHandler.OnStartTimerEvent;
-			timer.OnRunningTimerEvent  += timerEventHandler.OnRunningTimerEvent;
-			timer.OnStopTimerEvent     += timerEventHandler.OnStopTimerEvent;
-			timer.OnEndTimerEvent      += timerEventHandler.OnEndTimerEvent;
-			timer.OnResetTimerEvent    += timerEventHandler.OnResetTimerEvent;
-			timer.OnDeleteTimerEvent   += timerEventHandler.OnDeleteTimerEvent;
+			timer.OnStartTimerEvent += timerEventHandler.OnStartTimerEvent;
+			timer.OnRunningTimerEvent += timerEventHandler.OnRunningTimerEvent;
+			timer.OnStopTimerEvent += timerEventHandler.OnStopTimerEvent;
+			timer.OnEndTimerEvent += timerEventHandler.OnEndTimerEvent;
+			timer.OnResetTimerEvent += timerEventHandler.OnResetTimerEvent;
+			timer.OnDeleteTimerEvent += timerEventHandler.OnDeleteTimerEvent;
 		}
 
-        /// <summary>
-        /// 이벤트 구독해제를 대신해주는 유틸 기능 함수
-        /// </summary>
-        public static void RemoveResterTimerEvent(ITimer timer, ITimerEventHandler timerEventHandler)
+		/// <summary>
+		/// 이벤트 구독해제를 대신해주는 유틸 기능 함수
+		/// </summary>
+		public static void RemoveResiterTimerEvent(ITimer timer, ITimerEventHandler timerEventHandler)
 		{
-			timer.OnStartTimerEvent    -= timerEventHandler.OnStartTimerEvent;
-			timer.OnRunningTimerEvent  -= timerEventHandler.OnRunningTimerEvent;
-			timer.OnStopTimerEvent     -= timerEventHandler.OnStopTimerEvent;
-			timer.OnEndTimerEvent      -= timerEventHandler.OnEndTimerEvent;
-			timer.OnResetTimerEvent    -= timerEventHandler.OnResetTimerEvent;
-			timer.OnDeleteTimerEvent   -= timerEventHandler.OnDeleteTimerEvent;
+			timer.OnStartTimerEvent -= timerEventHandler.OnStartTimerEvent;
+			timer.OnRunningTimerEvent -= timerEventHandler.OnRunningTimerEvent;
+			timer.OnStopTimerEvent -= timerEventHandler.OnStopTimerEvent;
+			timer.OnEndTimerEvent -= timerEventHandler.OnEndTimerEvent;
+			timer.OnResetTimerEvent -= timerEventHandler.OnResetTimerEvent;
+			timer.OnDeleteTimerEvent -= timerEventHandler.OnDeleteTimerEvent;
 		}
 
 
@@ -174,10 +177,11 @@ namespace Seongho.TimerSystem
 		/// <summary>
 		/// 여기서 실질적으로 타이머를 생성해준다.
 		/// </summary>
-		public ITimer CreateTimer(string timerName, float timer)
+		public ITimer CreateTimer(string timerName, float timer, float tick)
 		{
 			Timer iTimer = new GameObject(timerName).AddComponent<Timer>();
 			iTimer.SetTimer(timer);
+			iTimer.SetTick(tick);
 
 			iTimer.transform.parent = transform;
 

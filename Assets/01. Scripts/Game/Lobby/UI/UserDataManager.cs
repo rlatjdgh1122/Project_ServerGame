@@ -11,7 +11,7 @@ public class UserDataManager : NetworkMonoSingleton<UserDataManager>
 	public event Action<UserData> OnAddUserEvent = null;
 	public event Action<UserData> OnRemoveUserEvent = null;
 	public event Action<UserData> OnValueChangedUserEvent = null;
-	
+
 	public override void Awake()
 	{
 		_userDataList = new();
@@ -19,7 +19,6 @@ public class UserDataManager : NetworkMonoSingleton<UserDataManager>
 
 	public override void OnNetworkSpawn()
 	{
-		Debug.Log("WQEr");
 		if (IsClient)
 		{
 			_userDataList.OnListChanged += HandleUserListChanged;
@@ -50,7 +49,7 @@ public class UserDataManager : NetworkMonoSingleton<UserDataManager>
 	{
 		if (IsClient)
 		{
-			_userDataList.OnListChanged -= HandleUserListChanged;
+			_userDataList.OnListChanged -= HandleUserListChanged;	
 		}
 
 		if (IsServer)
@@ -68,15 +67,14 @@ public class UserDataManager : NetworkMonoSingleton<UserDataManager>
 
 	public void ColorConfirm(TurnType turn)
 	{
-		SelectTankServerRpc(turn, NetworkManager.Singleton.LocalClientId);
+		SelectColorServerRpc(turn, NetworkManager.Singleton.LocalClientId);
 	}
 
 	[ServerRpc(RequireOwnership = false)]
 	//미리 생성된 네트워크 오브젝트이기에 RequireOwnership을 false로
-	public void SelectTankServerRpc(TurnType turn, ulong clientID)
+	public void SelectColorServerRpc(TurnType turn, ulong clientID)
 	{
 		int idx = FindIndex(clientID);
-
 		var oldData = _userDataList[idx];
 
 		_userDataList[idx] = new UserData
@@ -98,9 +96,9 @@ public class UserDataManager : NetworkMonoSingleton<UserDataManager>
 	/// <summary>
 	/// 처음 들어올 때 실행되는 함수
 	/// </summary>
-	/// <param name="gameData"></param>
+	/// <param name="data"></param>
 	/// <param name="clientID"></param>
-	private void HandleUserJoin(GameData gameData, ulong clientID)
+	private void HandleUserJoin(GameData data, ulong clientID)
 	{
 		int idx = FindIndex(clientID);
 		if (idx >= 0) return; //이미 존재하는 유저이니 무시
@@ -108,8 +106,8 @@ public class UserDataManager : NetworkMonoSingleton<UserDataManager>
 		var newUser = new UserData
 		{
 			clientId = clientID,
-			playerName = gameData.playerName,
-			authId = gameData.authId,
+			playerName = data.playerName,
+			authId = data.authId,
 			turnType = TurnType.None,
 		};
 
@@ -120,20 +118,27 @@ public class UserDataManager : NetworkMonoSingleton<UserDataManager>
 	{
 		if (_userDataList == null) return;
 
+		UserData result = default;
+
 		foreach (var user in _userDataList)
 		{
 			if (user.clientId != clientID) continue;
 
-			try
-			{
-				_userDataList.Remove(user);
-			}
-			catch (Exception e)
-			{
-				Debug.LogError($"{clientID} 삭제중 오류 : {user.playerName}");
-			}
+			result = user;
 			break;
-		}
+
+		} //end foreach
+
+		if (!result.Equals(default))
+		{
+			_userDataList.Remove(result);
+
+		} //end if
+		else
+		{
+			Debug.LogError($"{clientID} 삭제중 오류 : {result.playerName}");
+
+		} //end else
 	}
 
 	private void HandleUserListChanged(NetworkListEvent<UserData> evt)
@@ -144,6 +149,7 @@ public class UserDataManager : NetworkMonoSingleton<UserDataManager>
 				OnAddUserEvent?.Invoke(evt.Value);
 				break;
 			case NetworkListEvent<UserData>.EventType.Remove:
+				Debug.Log(evt.Value.clientId);
 				OnRemoveUserEvent?.Invoke(evt.Value);
 				break;
 			case NetworkListEvent<UserData>.EventType.Value:

@@ -1,14 +1,11 @@
 using ExtensionMethod.Dictionary;
 using ExtensionMethod.List;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class LobbyManager : ExpansionMonoBehaviour, ILobbyManager
+public class LobbyUIManager : MonoBehaviour, ILobbyManager
 {
 	public Button GameStartButton = null;
 	public Button ColorSelectButton = null;
@@ -32,25 +29,19 @@ public class LobbyManager : ExpansionMonoBehaviour, ILobbyManager
 			_colorToButtonDic.Add(button.ColorType, button);
 
 		} //end foreach
+
 		UserDataManager.Instance.OnAddUserEvent += OnAddUserEvent;
 		UserDataManager.Instance.OnValueChangedUserEvent += OnChangedDataEvent;
 		UserDataManager.Instance.OnRemoveUserEvent += OnRemoveDataEvent;
 	}
 
-	private void OnDestroy()
+	private void Start()
 	{
-		foreach (var button in ColorButtonList)
+		if(!UserDataManager.Instance.IsHost)
 		{
-			button.OnClickEvent -= HandleSelectedeColor;
+			GameStartButton.gameObject.SetActive(false);
 
-		} //end foreach
-
-		_colorToButtonDic.TryClear();
-		_userDataList.TryClear();
-
-		UserDataManager.Instance.OnAddUserEvent -= OnAddUserEvent;
-		UserDataManager.Instance.OnValueChangedUserEvent -= OnChangedDataEvent;
-		UserDataManager.Instance.OnRemoveUserEvent -= OnRemoveDataEvent;
+		} //end if
 	}
 
 	private void HandleSelectedeColor(LobbyColorButton button)
@@ -77,6 +68,14 @@ public class LobbyManager : ExpansionMonoBehaviour, ILobbyManager
 	private void OnAddUserEvent(UserData data)
 	{
 		_userDataList.Add(data);
+
+		//기존에 있던 유저가 이미 선택한 상황이라면
+		if (data.turnType != TurnType.None)
+		{
+			OnChangedDataEvent(data);
+
+		} //end if
+
 	}
 
 	/// <summary>
@@ -90,7 +89,9 @@ public class LobbyManager : ExpansionMonoBehaviour, ILobbyManager
 		{
 			button.OnConfirm();
 
-			int idx = _userDataList.GetIdx(target => target.clientId == data.clientId);
+			int idx = FindIndex(data.clientId);
+			if (idx < 0) return;
+
 			_userDataList[idx] = data;
 
 
@@ -112,6 +113,7 @@ public class LobbyManager : ExpansionMonoBehaviour, ILobbyManager
 		if (_colorToButtonDic.TryGetValue(data.turnType, out var button))
 		{
 			button.OnLeave();
+			_userDataList.Remove(data);
 		}
 	}
 
@@ -139,4 +141,31 @@ public class LobbyManager : ExpansionMonoBehaviour, ILobbyManager
 		return _userDataList.TrueForAll(data => data.turnType != TurnType.None);
 	}
 
+	private int FindIndex(ulong clientID)
+	{
+		for (int i = 0; i < _userDataList.Count; ++i)
+		{
+			if (_userDataList[i].clientId != clientID) continue;
+
+			return i;
+		}
+
+		return -1;
+	}
+
+	public void OnDestroy()
+	{
+		foreach (var button in ColorButtonList)
+		{
+			button.OnClickEvent -= HandleSelectedeColor;
+
+		} //end foreach
+
+		_colorToButtonDic.TryClear();
+		_userDataList.TryClear();
+
+		UserDataManager.Instance.OnAddUserEvent -= OnAddUserEvent;
+		UserDataManager.Instance.OnValueChangedUserEvent -= OnChangedDataEvent;
+		UserDataManager.Instance.OnRemoveUserEvent -= OnRemoveDataEvent;
+	}
 }
