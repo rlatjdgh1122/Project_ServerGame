@@ -152,7 +152,7 @@ namespace Seongho.TimerSystem
 		private IEnumerator Corou_Timer(float timer)
 		{
 			_curTime = timer;
-			float _tickTimer = timer - _tick;
+			float _tickTimer = timer;
 
 			while (_curTime > 1f) //1цй╠НаЖ
 			{

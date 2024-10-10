@@ -199,7 +199,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsDontDestroyLoad: 1
   _playerPrefab: {fileID: 2748015618285933986, guid: e1b7bdba1abaa1e459c9d0f9ed4f1c8b, type: 3}
-  _myType: -1
+  _cameraPrefab: {fileID: 7427176829848494866, guid: b2747b8c2f9d526459c399f3bd7f625c, type: 3}
 --- !u!4 &486393915
 Transform:
   m_ObjectHideFlags: 0

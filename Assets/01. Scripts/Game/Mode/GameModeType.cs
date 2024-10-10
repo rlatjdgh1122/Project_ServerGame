@@ -1,0 +1,6 @@
+public enum GameModeType : byte
+{
+	Competition,         //∞Ê¿Ô
+	Individual,          //∞≥¿Œ
+	Collaboration,       //«˘µø
+}

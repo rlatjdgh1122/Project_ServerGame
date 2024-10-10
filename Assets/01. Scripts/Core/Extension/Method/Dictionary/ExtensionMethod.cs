@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace ExtensionMethod.Dictionary
 {
@@ -40,6 +41,22 @@ namespace ExtensionMethod.Dictionary
 
 
 			if (dic.Count > 0) dic.Clear();
+		}
+
+		public static void KeyExcept<Key, Value>(this Dictionary<Key, Value> dic, Key key, Action<Value> thisAction = null, Action<Value> otherAction = null) where Key : IEquatable<Key>
+		{
+			foreach(var item in dic)
+			{
+				if (item.Key.Equals(key))
+				{
+					thisAction?.Invoke(item.Value);
+				}
+				else
+				{
+					otherAction?.Invoke(item.Value);
+				}
+
+			} //end foreach
 		}
 
 		public static value GetValue<key, value>(this Dictionary<key, value> dic, key myKey)
