@@ -1129,6 +1129,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NameContainer: {fileID: 1001718453}
+  DataController: {fileID: 1535704288}
   GameStartButton: {fileID: 446545949}
   ColorSelectButton: {fileID: 1228524487}
   OnSucceededGameStartEvent:
@@ -1932,7 +1933,7 @@ GameObject:
   - component: {fileID: 1535704289}
   - component: {fileID: 1535704288}
   m_Layer: 0
-  m_Name: UserDataManager
+  m_Name: UserDataController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1950,7 +1951,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89f4ce90d5f5ba74d86c52b0fd7b7992, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsDontDestroyLoad: 1
 --- !u!114 &1535704289
 MonoBehaviour:
   m_ObjectHideFlags: 0

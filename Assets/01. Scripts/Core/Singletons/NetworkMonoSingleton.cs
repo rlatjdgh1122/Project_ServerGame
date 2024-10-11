@@ -36,10 +36,10 @@ public class NetworkMonoSingleton<T> : ExpansionNetworkBehaviour where T : Expan
 	{
 		if (IsDontDestroyLoad)
 		{
-			if (GameObject.FindObjectOfType<T>() != null)
-			{
+			
+
 				DontDestroyOnLoad(gameObject);
-			}
+			
 
 		} //end if
 	}

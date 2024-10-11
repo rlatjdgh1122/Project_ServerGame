@@ -1,11 +1,9 @@
 using System;
-using System.Collections.Generic;
-using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
-using WebSocketSharp;
 
-public class UserDataController : NetworkMonoSingleton<UserDataController>
+//NetworkMonoSingleton<UserDataController>
+public class UserDataController : ExpansionNetworkBehaviour
 {
 	//private ILobbyManager _lobbyUI = null;
 
@@ -15,25 +13,23 @@ public class UserDataController : NetworkMonoSingleton<UserDataController>
 	private Action<UserData> OnRemoveUserEvent = null;
 	private Action<UserData> OnValueChangedUserEvent = null;
 
-	public override void Awake()
+	public void Awake()
 	{
 		_userDataList = new();
-
-		base.Awake();
 
 		//_lobbyUI = GetComponent<ILobbyManager>();
 	}
 
 	public void OnResiter(IUserDataEventHandler handler)
 	{
-		OnAddUserEvent += handler.OnRemoveUser;
+		OnAddUserEvent += handler.OnAddUser;
 		OnRemoveUserEvent += handler.OnRemoveUser;
 		OnValueChangedUserEvent += handler.OnValueChangedUser;
 	}
 
 	public void RemoveResiter(IUserDataEventHandler handler)
 	{
-		OnAddUserEvent -= handler.OnRemoveUser;
+		OnAddUserEvent -= handler.OnAddUser;
 		OnRemoveUserEvent -= handler.OnRemoveUser;
 		OnValueChangedUserEvent -= handler.OnValueChangedUser;
 	}
@@ -41,7 +37,6 @@ public class UserDataController : NetworkMonoSingleton<UserDataController>
 
 	public override void OnNetworkSpawn()
 	{
-		Debug.Log("스폰 제발 되라");
 		if (IsClient)
 		{
 			_userDataList.OnListChanged += HandleUserListChanged;
@@ -178,7 +173,7 @@ public class UserDataController : NetworkMonoSingleton<UserDataController>
 		{
 			case NetworkListEvent<UserData>.EventType.Add:
 				//_lobbyUI.OnAddUser(evt.Value);
-				AddUerDAt(evt.Value);
+				OnAddUserEvent?.Invoke(evt.Value);
 				break;
 			case NetworkListEvent<UserData>.EventType.Remove:
 				//_lobbyUI.OnRemoveUser(evt.Value);
@@ -189,11 +184,6 @@ public class UserDataController : NetworkMonoSingleton<UserDataController>
 				OnValueChangedUserEvent?.Invoke(evt.Value);
 				break;
 		}
-	}
-
-	public void AddUerDAt(UserData data)
-	{
-		OnAddUserEvent?.Invoke(data);
 	}
 
 

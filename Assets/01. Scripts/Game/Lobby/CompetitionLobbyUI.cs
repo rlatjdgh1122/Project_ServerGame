@@ -9,10 +9,11 @@ using UnityEngine.UI;
 /// <summary>
 /// 경쟁모드 로비 UI
 /// </summary>
-[DefaultExecutionOrder(1)]
 public class CompetitionLobbyUI : ExpansionMonoBehaviour, ILobbyManager
 {
 	public UserNameContainer NameContainer = null;
+
+	public UserDataController DataController = null;
 
 	public Button GameStartButton = null;
 	public Button ColorSelectButton = null;
@@ -28,6 +29,8 @@ public class CompetitionLobbyUI : ExpansionMonoBehaviour, ILobbyManager
 
 	private void Awake()
 	{
+		DataController.OnResiter(this);
+
 		ColorSelectButton.interactable = false;
 
 		foreach (var button in ColorButtonList)
@@ -40,7 +43,7 @@ public class CompetitionLobbyUI : ExpansionMonoBehaviour, ILobbyManager
 
 	private void Start()
 	{
-		UserDataController.Instance.OnResiter(this);
+		//UserDataController.Instance.OnResiter(this);
 	}
 
 	/*public override void OnNetworkSpawn()
@@ -74,8 +77,6 @@ public class CompetitionLobbyUI : ExpansionMonoBehaviour, ILobbyManager
 
 	public void OnAddUser(UserData data)
 	{
-		Debug.Log("WQERqwer");
-
 		//이름 생성
 		NameContainer.CreateUserData(data);
 
@@ -130,7 +131,7 @@ public class CompetitionLobbyUI : ExpansionMonoBehaviour, ILobbyManager
 		ColorButtonList.ForEach(btn => btn.SetInteractable(false));
 
 		//서버에 RPC날려서 모든 클라에 적용
-		UserDataController.Instance.ColorConfirm(SelectTurnType);
+		DataController.ColorConfirm(SelectTurnType);
 	}
 
 	private void HandleSelectedeColor(LobbyColorButton button)
@@ -175,6 +176,6 @@ public class CompetitionLobbyUI : ExpansionMonoBehaviour, ILobbyManager
 		_colorToButtonDic.TryClear();
 		_userDataList.TryClear();
 
-		UserDataController.Instance.RemoveResiter(this);
+		DataController.RemoveResiter(this);
 	}
 }
