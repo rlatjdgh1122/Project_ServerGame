@@ -1,73 +1,164 @@
+using Firebase.Auth;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using TMPro;
+using TMPro.EditorUtilities;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class AuthManager : MonoBehaviour
+public class AuthManager
 {
-	public TextMeshProUGUI _logText = null;
-	public TextMeshProUGUI token = null;
+    private static AuthManager instance = null;
+    public static AuthManager Instance
+    {
+        get
+        {
+            if (instance == null) instance = new AuthManager();
+            return instance;
 
-	async void Start()
-	{
-		await UnityServices.InitializeAsync();
-	}
+        } //end get
+    }
 
-	public async void OnSignIn()
-	{
-		await SignInAnonymous();
-	}
+    private static FirebaseAuth _auth = null;
+    private static FirebaseUser _user = null;
 
-	public void OnSignOut()
-	{
-		_logText.text = "pleaze Click to LoginButton";
-		//token.text = $"토큰 : {GetAccessToken()}";
-		AuthenticationService.Instance.SignOut(true);
-	}
+    [RuntimeInitializeOnLoadMethod]
+    private static void Init()
+    {
+        _auth = FirebaseAuth.DefaultInstance;
 
-	private async Task SignInAnonymous()
-	{
-		try
-		{
-			//await AuthenticationService.Instance.SignInAnonymouslyAsync();
-			//token.text = $"토큰 : {GetAccessToken()}";
-			//_logText.text = $"Player Id : {AuthenticationService.Instance.PlayerId}";
+        if (_auth != null)
+        {
+            if (_auth.CurrentUser != null)
+                _auth.SignOut();
 
-			await VerifyTokenWithServer(GetAccessToken());
-		}
-		catch (AuthenticationException ex)
-		{
-			_logText.text = "Sign in Failed!";
-			Debug.LogException(ex);
-		}
-	}
+            _auth.StateChanged += OnChanged;
+        } //end if
+    }
 
-	public string GetAccessToken()
-	{
-		return AuthenticationService.Instance.AccessToken;
-	}
+    private static void OnChanged(object sender, EventArgs e)
+    {
+        if (_auth.CurrentUser != _user)
+        {
+            bool signed = _auth.CurrentUser != null;
+            if (!signed && _user != null)
+            {
+                Debug.Log("로그아웃");
 
-	private async Task VerifyTokenWithServer(string accessToken)
-	{
-		using (HttpClient client = new HttpClient())
-		{
-			client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+            } //end if
 
-			string serverUrl = "https://localhost:7012/api/Auth/verifyToken";
-			HttpResponseMessage response = await client.GetAsync(serverUrl);
+            _user = _auth.CurrentUser;
 
-			if (response.IsSuccessStatusCode)
-			{
-				Debug.Log("Token verification succeeded");
-			}
-			else
-			{
-				Debug.LogError("Token verification failed");
-			}
-		}
+            if (signed)
+            {
+                Debug.Log("로그인");
+
+            } //end if
+        }
+
+    }
+
+    public void Create(string email, string password)
+    {
+        _auth.CreateUserWithEmailAndPasswordAsync(email, password).ContinueWith(task =>
+        {
+            if (task.IsCanceled)
+            {
+                Debug.LogError("회원가입 취소");
+                return;
+
+            } //end if
+
+            if (task.IsFaulted)
+            {
+                Debug.LogError("회원가입 실패");
+                return;
+
+            } //end if
+
+            FirebaseUser newUser = task.Result.User;
+            Debug.Log("회원가입 완료");
+        });
+    }
+
+    public void Login(string email, string password)
+    {
+        _auth.SignInWithEmailAndPasswordAsync(email, password).ContinueWith(task =>
+        {
+            if (task.IsCanceled)
+            {
+                Debug.LogError("로그인 취소");
+                return;
+
+            } //end if
+
+            if (task.IsFaulted)
+            {
+                Debug.LogError("로그인 실패");
+                return;
+
+            } //end if
+
+            FirebaseUser newUser = task.Result.User;
+            Debug.Log("로그인 완료");
+
+            A();
+        });
+    }
+
+    public void Logout()
+    {
+        _auth.SignOut();
+    }
+
+    private async Task A()
+    {
+        FirebaseUser user = _auth.CurrentUser;
+        _ = user.TokenAsync(true).ContinueWith(task =>
+        {
+            if (task.IsCanceled)
+            {
+                Debug.LogError("TokenAsync was canceled.");
+                return;
+            }
+
+            if (task.IsFaulted)
+            {
+                Debug.LogError("TokenAsync encountered an error: " + task.Exception);
+                return;
+            }
+
+            string idToken = task.Result;
+
+            // Send token to your backend via HTTPS
+            // ...
+
+            VerifyTokenWithServer(idToken);
+
+        });
+    }
+
+    private async void VerifyTokenWithServer(string accessToken)
+    {
+        using (HttpClient client = new HttpClient())
+        {
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+
+            string serverUrl = "https://localhost:7012/api/Auth/verifyToken";
+            HttpResponseMessage response = await client.GetAsync(serverUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Debug.Log("Token verification succeeded");
+            }
+            else
+            {
+                Debug.LogError("Token verification failed");
+            }
+        }
     }
 }
