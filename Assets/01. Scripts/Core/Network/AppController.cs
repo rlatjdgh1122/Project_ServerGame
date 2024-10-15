@@ -8,7 +8,6 @@ using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
-
 public class AppController : MonoSingleton<AppController>
 {
 	[SerializeField] private ClientSingle _clientPrefab = null;
@@ -19,6 +18,7 @@ public class AppController : MonoSingleton<AppController>
 
 	public async void Start()
 	{
+		
 		await UnityServices.InitializeAsync();
 
 		var state = await AuthenticationWrapper.DoAuth(3);
