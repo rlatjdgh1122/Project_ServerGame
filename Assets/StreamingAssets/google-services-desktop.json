@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "298281878127",
+    "project_id": "project-servergame",
+    "storage_bucket": "project-servergame.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:298281878127:android:08ca57774aa41f9ff8c39a",
+        "android_client_info": {
+          "package_name": "com.firebase.severgame"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLb_sF66vin9jhDXCR2XNX8ShGSaeYjg0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -17,7 +17,6 @@ public class ResourceManager : MonoSingleton<ResourceManager>
 	private MultiKeyDictionary<string, Type, IDataContainer> _labelToDataContainerDic = new();    //라벨과 타입에 해당되는 에셋들을 저장하는 딕셔너리
 	private Dictionary<Type, IDataContainer> _typeToDataContainerDic = new();                     //타입에 해당되는 에셋들을 저장하는 딕셔너리
 
-	private string _curLabelName = "";       //현재 라벨 이름을 저장해준다.
 	private MethodInfo _cachedMethod = null; //리플렉션 중복을 막기 위해 미리 캐시해준다.
 
 	private int _curCount = 0;

@@ -2,16 +2,28 @@ using Firebase.Auth;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using TMPro;
-using TMPro.EditorUtilities;
-using Unity.Services.Authentication;
-using Unity.Services.Core;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class AuthManager
 {
+    private string _uid = "";
+    public string UID
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(_uid))
+            {
+                Debug.Log("UID를 찾을 수 없습니다.");
+
+                return "";
+
+            } //end if
+
+            return _uid;
+
+        } //end get
+    }
+
     private static AuthManager instance = null;
     public static AuthManager Instance
     {
@@ -58,7 +70,7 @@ public class AuthManager
                 Debug.Log("로그인");
 
             } //end if
-        }
+        } //end if
 
     }
 
@@ -106,7 +118,7 @@ public class AuthManager
             FirebaseUser newUser = task.Result.User;
             Debug.Log("로그인 완료");
 
-            A();
+            _ = GetUIdByServerAsync();
         });
     }
 
@@ -115,10 +127,11 @@ public class AuthManager
         _auth.SignOut();
     }
 
-    private async Task A()
+    private async Task GetUIdByServerAsync()
     {
         FirebaseUser user = _auth.CurrentUser;
-        _ = user.TokenAsync(true).ContinueWith(task =>
+
+        await user.TokenAsync(true).ContinueWith(async task =>
         {
             if (task.IsCanceled)
             {
@@ -134,31 +147,31 @@ public class AuthManager
 
             string idToken = task.Result;
 
-            // Send token to your backend via HTTPS
-            // ...
-
-            VerifyTokenWithServer(idToken);
-
+            await IdTokenWithServerAsync(idToken);
         });
     }
 
-    private async void VerifyTokenWithServer(string accessToken)
+    private async Task IdTokenWithServerAsync(string idToken)
     {
         using (HttpClient client = new HttpClient())
         {
-            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {idToken}");
 
             string serverUrl = "https://localhost:7012/api/Auth/verifyToken";
             HttpResponseMessage response = await client.GetAsync(serverUrl);
 
+            _uid = await response.Content.ReadAsStringAsync();
+
             if (response.IsSuccessStatusCode)
             {
                 Debug.Log("Token verification succeeded");
-            }
+            } //end if
+
             else
             {
                 Debug.LogError("Token verification failed");
-            }
-        }
-    }
+
+            } //end else
+        } //end method
+    } //end class
 }
