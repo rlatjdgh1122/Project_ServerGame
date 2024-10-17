@@ -15,7 +15,7 @@ public class AuthUI : MonoBehaviour
     }
 
     public void OnCreateUserData()
-    {
+    {  
         AuthManager.Instance.CreateUserData();
     }
 
