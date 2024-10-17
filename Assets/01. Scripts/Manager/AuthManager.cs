@@ -1,13 +1,23 @@
 using Firebase.Auth;
+using Newtonsoft.Json;
+using ShardData;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
+using TreeEditor;
+using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
 public class AuthManager
 {
     private string _uid = "";
-    public string UID
+    private ulong _playerid = long.MaxValue; //무조건 long.MaxValue 미만의 값
+
+    #region Property
+
+    public string UId
     {
         get
         {
@@ -22,7 +32,37 @@ public class AuthManager
             return _uid;
 
         } //end get
+
+        private set
+        {
+            _uid = value;
+
+        } //end set
     }
+
+    public ulong PlayerId
+    {
+        get
+        {
+            if (_playerid.Equals(long.MaxValue))
+            {
+                Debug.Log("Playerid를 찾을 수 없습니다.");
+
+                return default;
+
+            } //end if
+
+            return _playerid;
+
+        } //end get
+
+        private set
+        {
+            _playerid = value;
+
+        } //end set
+    }
+    #endregion
 
     private static AuthManager instance = null;
     public static AuthManager Instance
@@ -97,6 +137,11 @@ public class AuthManager
         });
     }
 
+    public void CreateUserData()
+    {
+        _ = CreateUserServerDataWithServerAsync();
+    }
+
     public void Login(string email, string password)
     {
         _auth.SignInWithEmailAndPasswordAsync(email, password).ContinueWith(task =>
@@ -160,7 +205,7 @@ public class AuthManager
             string serverUrl = "https://localhost:7012/api/Auth/verifyToken";
             HttpResponseMessage response = await client.GetAsync(serverUrl);
 
-            _uid = await response.Content.ReadAsStringAsync();
+            UId = await response.Content.ReadAsStringAsync(); //서버에서 전달한 UID를 받아옴
 
             if (response.IsSuccessStatusCode)
             {
@@ -174,4 +219,88 @@ public class AuthManager
             } //end else
         } //end method
     } //end class
+
+
+    private async Task CreateUserServerDataWithServerAsync()
+    {
+        string serverUrl = $"https://localhost:7012/api/UserData/CreateUserData?uid={UId}"; // 사용자 데이터 생성 API
+
+        using (HttpClient client = new HttpClient())
+        {
+            HttpResponseMessage response = await client.PostAsync(serverUrl, null);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // JSON 응답을 string으로 읽기
+                string json = await response.Content.ReadAsStringAsync();
+
+                // JSON을 ulong으로 변환 (가정: 서버에서 'PlayerId'를 반환한다고 가정)
+                PlayerId = JsonConvert.DeserializeObject<ulong>(json);
+
+                Debug.Log($"UserData 생성 성공 : {PlayerId}");
+
+            }
+
+            else
+            {
+                Debug.LogError("UserData 생성 실패: " + response.StatusCode);
+
+            } //end else
+
+        } //end using
+    }
+
+    public async Task<UserServerData> GetUserServerDataWithServerAsync()
+    {
+        string serverUrl = $"https://localhost:7012/api/UserData/GetUserDataByPlayerId?uid={UId}";
+
+        using (HttpClient client = new HttpClient())
+        {
+            HttpResponseMessage response = await client.GetAsync(serverUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                string json = await response.Content.ReadAsStringAsync();
+                UserServerData data = JsonConvert.DeserializeObject<UserServerData>(json);
+
+                Debug.Log("데이터 가져오기 성공");
+                return data;
+
+            } //end if
+
+            else
+            {
+                Debug.LogError("Token verification failed");
+                return default;
+
+            } //end else
+
+        } //end using
+    }
+
+    public async Task UpdateUserServerDataWithServerAsync(UserServerData data)
+    {
+        string serverUrl = $"https://localhost:7012/api/UserData/UpdateUserData?uid={UId}";
+
+        using (HttpClient client = new HttpClient())
+        {
+
+            var json = JsonConvert.SerializeObject(data);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PutAsync(serverUrl, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Debug.Log("데이터 수정 성공");
+
+            } //end if
+
+            else
+            {
+                Debug.LogError("Token verification failed");
+
+            } //end else
+
+        } //end using
+    }
 }

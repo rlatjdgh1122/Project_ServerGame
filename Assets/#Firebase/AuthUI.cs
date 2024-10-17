@@ -1,3 +1,4 @@
+using ShardData;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -11,6 +12,25 @@ public class AuthUI : MonoBehaviour
     public void OnCreate()
     {
         AuthManager.Instance.Create(EmailInput.text, PasswordInput.text);
+    }
+
+    public void OnCreateUserData()
+    {
+        AuthManager.Instance.CreateUserData();
+    }
+
+    public async void OnUpdateUserData()
+    {
+        var prevData = await AuthManager.Instance.GetUserServerDataWithServerAsync();
+        UserServerData data = new()
+        {
+            Coin = prevData.Coin + 1000,
+            PlayerId = prevData.PlayerId,
+            SkinList = prevData.SkinList,
+            UserName = "¼ºÈ£",
+        };
+
+        await AuthManager.Instance.UpdateUserServerDataWithServerAsync(data);
     }
 
     public void OnLogin()
