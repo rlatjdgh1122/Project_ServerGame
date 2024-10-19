@@ -21,7 +21,8 @@ public class AuthUI : MonoBehaviour
 
     public async void OnUpdateUserData()
     {
-        var prevData = await AuthManager.Instance.GetUserServerDataWithServerAsync();
+        UserServerData prevData = await UserServerDataManager.Instance.GetUserServerDataWithServerAsync();
+
         UserServerData data = new()
         {
             Coin = prevData.Coin + 1000,
@@ -30,7 +31,7 @@ public class AuthUI : MonoBehaviour
             UserName = "¼ºÈ£",
         };
 
-        await AuthManager.Instance.UpdateUserServerDataWithServerAsync(data);
+        await UserServerDataManager.Instance.UpdateUserServerDataWithServerAsync(data);
     }
 
     public void OnLogin()

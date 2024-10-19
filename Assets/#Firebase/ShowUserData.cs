@@ -9,7 +9,7 @@ public class ShowUserData : MonoBehaviour
 
     public async void OnGetUserData()
     {
-        UserServerData data = await AuthManager.Instance.GetUserServerDataWithServerAsync();
+        UserServerData data = await UserServerDataManager.Instance.GetUserServerDataWithServerAsync();
 
         _coinText.text = data.Coin.ToString();
         _userName.text = data.UserName.ToString();

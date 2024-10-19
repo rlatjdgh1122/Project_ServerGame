@@ -10,7 +10,7 @@ using TreeEditor;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
-public class AuthManager
+public class AuthManager : Singleton<AuthManager>
 {
     private string _uid = "";
     private ulong _playerid = long.MaxValue; //무조건 long.MaxValue 미만의 값
@@ -63,17 +63,6 @@ public class AuthManager
         } //end set
     }
     #endregion
-
-    private static AuthManager instance = null;
-    public static AuthManager Instance
-    {
-        get
-        {
-            if (instance == null) instance = new AuthManager();
-            return instance;
-
-        } //end get
-    }
 
     private static FirebaseAuth _auth = null;
     private static FirebaseUser _user = null;
@@ -221,6 +210,9 @@ public class AuthManager
     } //end class
 
 
+    /// <summary>
+    /// 계정이 생성될 때 한번 실행
+    /// </summary>
     private async Task CreateUserServerDataWithServerAsync()
     {
         string serverUrl = $"https://localhost:7012/api/UserData/CreateUserData?uid={UId}"; // 사용자 데이터 생성 API
@@ -250,57 +242,4 @@ public class AuthManager
         } //end using
     }
 
-    public async Task<UserServerData> GetUserServerDataWithServerAsync()
-    {
-        string serverUrl = $"https://localhost:7012/api/UserData/GetUserDataByPlayerId?uid={UId}";
-
-        using (HttpClient client = new HttpClient())
-        {
-            HttpResponseMessage response = await client.GetAsync(serverUrl);
-
-            if (response.IsSuccessStatusCode)
-            {
-                string json = await response.Content.ReadAsStringAsync();
-                UserServerData data = JsonConvert.DeserializeObject<UserServerData>(json);
-
-                Debug.Log("데이터 가져오기 성공");
-                return data;
-
-            } //end if
-
-            else
-            {
-                Debug.LogError("Token verification failed");
-                return default;
-
-            } //end else
-
-        } //end using
-    }
-
-    public async Task UpdateUserServerDataWithServerAsync(UserServerData data)
-    {
-        string serverUrl = $"https://localhost:7012/api/UserData/UpdateUserData?uid={UId}";
-
-        using (HttpClient client = new HttpClient())
-        {
-
-            var json = JsonConvert.SerializeObject(data);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await client.PutAsync(serverUrl, content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                Debug.Log("데이터 수정 성공");
-
-            } //end if
-
-            else
-            {
-                Debug.LogError("Token verification failed");
-
-            } //end else
-
-        } //end using
-    }
 }
