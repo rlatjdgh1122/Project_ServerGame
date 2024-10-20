@@ -100,57 +100,53 @@ public class AuthManager : RestSingleton<AuthManager>
 
     }
 
-    public void Create(string email, string password)
+    public async void Create(string email, string password)
     {
-        _auth.CreateUserWithEmailAndPasswordAsync(email, password).ContinueWith(task =>
+        try
         {
-            if (task.IsCanceled)
-            {
-                Debug.LogError("회원가입 취소");
-                return;
+            var authResult = await _auth.CreateUserWithEmailAndPasswordAsync(email, password);
 
-            } //end if
-
-            if (task.IsFaulted)
-            {
-                Debug.LogError("회원가입 실패");
-                return;
-
-            } //end if
-
-            FirebaseUser newUser = task.Result.User;
+            FirebaseUser newUser = authResult.User;
             Debug.Log("회원가입 완료");
-        });
-    }
 
-    public void CreateUserData()
-    {
-        _ = CreateUserServerDataWithServerAsync();
-    }
+            // 회원가입을 하면 UId를 세팅함
+            UId = await GetUIdWithServerAsync();
 
-    public void Login(string email, string password)
-    {
-        _auth.SignInWithEmailAndPasswordAsync(email, password).ContinueWith(task =>
+            // 회원가입을 할 때 UserServerData 생성
+            // 추후 : PlayerId를 로그인할 때 가져오는 것이 있어야함
+            await UserServerDataManager.Instance.CreateUserServerDataWithServerAsync();
+        }
+        catch (OperationCanceledException)
         {
-            if (task.IsCanceled)
-            {
-                Debug.LogError("로그인 취소");
-                return;
+            Debug.LogError("회원가입 취소");
+        }
+    }
 
-            } //end if
+    public async void Login(string email, string password)
+    {
+        try
+        {
+            var authResult = await _auth.SignInWithEmailAndPasswordAsync(email, password);
 
-            if (task.IsFaulted)
-            {
-                Debug.LogError("로그인 실패");
-                return;
-
-            } //end if
-
-            FirebaseUser newUser = task.Result.User;
+            FirebaseUser newUser = authResult.User;
             Debug.Log("로그인 완료");
 
-            _ = GetUIdWithServerAsync();
-        });
+            // UId
+            UId = await GetUIdWithServerAsync();
+
+        } //end try
+
+        catch (OperationCanceledException)
+        {
+            Debug.LogError("로그인 취소");
+
+        } //end catch
+
+        catch (Exception ex)
+        {
+            Debug.LogError($"로그인 실패: {ex.Message}");
+
+        } //end catch
     }
 
     public void Logout()
@@ -160,89 +156,66 @@ public class AuthManager : RestSingleton<AuthManager>
 
     #region UId가져오는 함수
 
-    private async Task GetUIdWithServerAsync()
+    private async Task<string> GetUIdWithServerAsync()
     {
         FirebaseUser user = _auth.CurrentUser;
 
-        await user.TokenAsync(true).ContinueWith(async task =>
+        if (user == null)
         {
-            if (task.IsCanceled)
-            {
-                Debug.LogError("TokenAsync was canceled.");
-                return;
-            }
+            Debug.LogError("유저를 찾을 수 업습니다.");
 
-            if (task.IsFaulted)
-            {
-                Debug.LogError("TokenAsync encountered an error: " + task.Exception);
-                return;
-            }
+            return null;
+        } //end if
 
-            string idToken = task.Result;
+        try
+        {
+            // Request a fresh token
+            string idToken = await user.TokenAsync(true);
 
-            await IdTokenWithServerAsync(idToken);
-        });
+            // Use the idToken to verify with the server
+            return await IdTokenWithServerAsync(idToken);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error fetching token: {ex.Message}");
+            return null;
+        }
     }
-
-    private async Task IdTokenWithServerAsync(string idToken)
+    
+    private async Task<string> IdTokenWithServerAsync(string idToken)
     {
         string url = GetURL("verifyToken");
-        Debug.Log(url);
+
         using (HttpClient client = new HttpClient())
         {
+            // Add the token in the Authorization header
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {idToken}");
 
-            HttpResponseMessage response = await client.GetAsync(url);
-
-            UId = await response.Content.ReadAsStringAsync(); //서버에서 전달한 UID를 받아옴
-                
-            if (response.IsSuccessStatusCode)
+            try
             {
-                Debug.Log("Token verification succeeded");
+                HttpResponseMessage response = await client.GetAsync(url);
 
-            } //end if
-
-            else
+                if (response.IsSuccessStatusCode)
+                {
+                    // Get the UID from the response
+                    string UId = await response.Content.ReadAsStringAsync();
+                    Debug.Log("Token verification succeeded, UId: " + UId);
+                    return UId;
+                }
+                else
+                {
+                    Debug.LogError("Token verification failed");
+                    return null;
+                }
+            }
+            catch (Exception ex)
             {
-                Debug.LogError("Token verification failed");
-
-            } //end else
-
-        } //end method
-    } //end class
+                Debug.LogError($"Error during token verification: {ex.Message}");
+                return null;
+            }
+        }
+    }
 
     #endregion
-
-    /// <summary>
-    /// 계정이 생성될 때 한번 실행
-    /// </summary>
-    private async Task CreateUserServerDataWithServerAsync()
-    {
-        string url = GetURL("CreateUserData", new FromData() { Name = "uid", Data = UId });
-
-        using (HttpClient client = new HttpClient())
-        {
-            HttpResponseMessage response = await client.PostAsync(url, null);
-
-            if (response.IsSuccessStatusCode)
-            {
-                // JSON 응답을 string으로 읽기
-                string json = await response.Content.ReadAsStringAsync();
-
-                //고유 넘버인 PlayerId를 서버에서 받아옴
-                PlayerId = JsonConvert.DeserializeObject<ulong>(json);
-
-                Debug.Log($"UserData 생성 성공 : {PlayerId}");
-
-            }
-
-            else
-            {
-                Debug.LogError("UserData 생성 실패: " + response.StatusCode);
-
-            } //end else
-
-        } //end using
-    }
 
 }

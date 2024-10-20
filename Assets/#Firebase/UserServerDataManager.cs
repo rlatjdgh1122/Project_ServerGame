@@ -5,12 +5,46 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Unity.Services.Lobbies.Models;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class UserServerDataManager : RestSingleton<UserServerDataManager>
 {
     public UserServerDataManager() : base("UserData") { }
+
+    /// <summary>
+    /// 계정이 생성될 때 한번 실행
+    /// </summary>
+    public async Task CreateUserServerDataWithServerAsync()
+    {
+        string url = GetURL("CreateUserData", new FromData() { Name = "uid", Data = AuthManager.Instance.UId });
+
+        using (HttpClient client = new HttpClient())
+        {
+            HttpResponseMessage response = await client.PostAsync(url, null);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // JSON 응답을 string으로 읽기
+                string json = await response.Content.ReadAsStringAsync();
+
+                //고유 넘버인 PlayerId를 서버에서 받아옴
+                //PlayerId = JsonConvert.DeserializeObject<ulong>(json);
+
+                //Debug.Log($"UserData 생성 성공 : {PlayerId}");
+                
+                Debug.Log("데이터 만들기 성공");
+            }
+
+            else
+            {
+                Debug.LogError("UserData 생성 실패: " + response.StatusCode);
+
+            } //end else
+
+        } //end using
+    }
 
     public async Task<UserServerData> GetUserServerDataWithServerAsync()
     {

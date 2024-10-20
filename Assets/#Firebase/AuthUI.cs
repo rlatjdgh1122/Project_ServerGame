@@ -14,11 +14,6 @@ public class AuthUI : MonoBehaviour
         AuthManager.Instance.Create(EmailInput.text, PasswordInput.text);
     }
 
-    public void OnCreateUserData()
-    {  
-        AuthManager.Instance.CreateUserData();
-    }
-
     public async void OnUpdateUserData()
     {
         UserServerData prevData = await UserServerDataManager.Instance.GetUserServerDataWithServerAsync();

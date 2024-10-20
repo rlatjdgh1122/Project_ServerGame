@@ -17,8 +17,6 @@ public class RestSingleton<T> : Singleton<T> where T : class, new()
 
     public RestSingleton(string controllerName)
     {
-        Debug.Log("controllerName");
-
         BaseURL = $"https://localhost:7012/api/{controllerName}";
     }
 
