@@ -1,16 +1,11 @@
 using Firebase.Auth;
 using Newtonsoft.Json;
-using ShardData;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using TreeEditor;
-using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
-public class AuthManager : Singleton<AuthManager>
+public class AuthManager : RestSingleton<AuthManager>
 {
     private string _uid = "";
     private ulong _playerid = long.MaxValue; //무조건 long.MaxValue 미만의 값
@@ -63,6 +58,8 @@ public class AuthManager : Singleton<AuthManager>
         } //end set
     }
     #endregion
+
+    public AuthManager() : base("Auth") { }
 
     private static FirebaseAuth _auth = null;
     private static FirebaseUser _user = null;
@@ -152,7 +149,7 @@ public class AuthManager : Singleton<AuthManager>
             FirebaseUser newUser = task.Result.User;
             Debug.Log("로그인 완료");
 
-            _ = GetUIdByServerAsync();
+            _ = GetUIdWithServerAsync();
         });
     }
 
@@ -161,7 +158,9 @@ public class AuthManager : Singleton<AuthManager>
         _auth.SignOut();
     }
 
-    private async Task GetUIdByServerAsync()
+    #region UId가져오는 함수
+
+    private async Task GetUIdWithServerAsync()
     {
         FirebaseUser user = _auth.CurrentUser;
 
@@ -187,18 +186,20 @@ public class AuthManager : Singleton<AuthManager>
 
     private async Task IdTokenWithServerAsync(string idToken)
     {
+        string url = GetURL("verifyToken");
+        Debug.Log(url);
         using (HttpClient client = new HttpClient())
         {
             client.DefaultRequestHeaders.Add("Authorization", $"Bearer {idToken}");
 
-            string serverUrl = "https://localhost:7012/api/Auth/verifyToken";
-            HttpResponseMessage response = await client.GetAsync(serverUrl);
+            HttpResponseMessage response = await client.GetAsync(url);
 
             UId = await response.Content.ReadAsStringAsync(); //서버에서 전달한 UID를 받아옴
-
+                
             if (response.IsSuccessStatusCode)
             {
                 Debug.Log("Token verification succeeded");
+
             } //end if
 
             else
@@ -206,27 +207,29 @@ public class AuthManager : Singleton<AuthManager>
                 Debug.LogError("Token verification failed");
 
             } //end else
+
         } //end method
     } //end class
 
+    #endregion
 
     /// <summary>
     /// 계정이 생성될 때 한번 실행
     /// </summary>
     private async Task CreateUserServerDataWithServerAsync()
     {
-        string serverUrl = $"https://localhost:7012/api/UserData/CreateUserData?uid={UId}"; // 사용자 데이터 생성 API
+        string url = GetURL("CreateUserData", new FromData() { Name = "uid", Data = UId });
 
         using (HttpClient client = new HttpClient())
         {
-            HttpResponseMessage response = await client.PostAsync(serverUrl, null);
+            HttpResponseMessage response = await client.PostAsync(url, null);
 
             if (response.IsSuccessStatusCode)
             {
                 // JSON 응답을 string으로 읽기
                 string json = await response.Content.ReadAsStringAsync();
 
-                // JSON을 ulong으로 변환 (가정: 서버에서 'PlayerId'를 반환한다고 가정)
+                //고유 넘버인 PlayerId를 서버에서 받아옴
                 PlayerId = JsonConvert.DeserializeObject<ulong>(json);
 
                 Debug.Log($"UserData 생성 성공 : {PlayerId}");

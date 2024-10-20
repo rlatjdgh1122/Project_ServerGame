@@ -10,14 +10,10 @@ public class RestSingleton<T> : Singleton<T> where T : class, new()
     public struct FromData
     {
         public string Name;
-        public object Value;
+        public object Data;
     }
 
-    public RestSingleton()
-    {
-        Debug.Log("QWer");
-    }
-
+    public RestSingleton() { }
 
     public RestSingleton(string controllerName)
     {
@@ -26,11 +22,11 @@ public class RestSingleton<T> : Singleton<T> where T : class, new()
         BaseURL = $"https://localhost:7012/api/{controllerName}";
     }
 
-    public string GetURL(string method, FromData data = default)
+    public string GetURL(string method, FromData? data = null)
     {
-        if (!data.Equals(default))
+        if (data.HasValue)
         {
-            return $"{BaseURL}/{method}?{data.Name}={data.Value.ToString()}";
+            return $"{BaseURL}/{method}?{data.Value.Name}={data.Value.Data.ToString()}";
 
         } //end return
 

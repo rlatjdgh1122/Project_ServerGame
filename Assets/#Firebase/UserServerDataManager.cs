@@ -14,7 +14,7 @@ public class UserServerDataManager : RestSingleton<UserServerDataManager>
 
     public async Task<UserServerData> GetUserServerDataWithServerAsync()
     {
-        string url = GetURL("GetUserDataByPlayerId", new FromData { Name = "uid", Value = AuthManager.Instance.UId });
+        string url = GetURL("GetUserDataByPlayerId", new FromData { Name = "uid", Data = AuthManager.Instance.UId });
 
         using (HttpClient client = new HttpClient())
         {
@@ -42,11 +42,10 @@ public class UserServerDataManager : RestSingleton<UserServerDataManager>
 
     public async Task UpdateUserServerDataWithServerAsync(UserServerData data)
     {
-        string url = GetURL("UpdateUserData", new FromData { Name = "uid", Value = AuthManager.Instance.UId });
+        string url = GetURL("UpdateUserData", new FromData { Name = "uid", Data = AuthManager.Instance.UId });
 
         using (HttpClient client = new HttpClient())
         {
-
             var json = JsonConvert.SerializeObject(data);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PutAsync(url, content);
