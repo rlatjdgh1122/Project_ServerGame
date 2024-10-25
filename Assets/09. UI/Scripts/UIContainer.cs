@@ -19,7 +19,7 @@ public interface IUIView //실제로 텍스트라던가 뭔가 데이터들을 보여주는 것
 public interface IUIContainerable { }
 public interface IUIContainer<T> : IUIContainerable
 {
-    public void DataBinding(T data);
+    public void DataBinding(in T data);
 }
 
 
@@ -56,15 +56,15 @@ public static class UIController //최상단 무모
 
 }
 
-public class UIContainer : MonoBehaviour //UIView에게 데이터를 전달해주는 매개체, 하나의 패널을 담당함, 안에 UIContainer가 들어있을 수도 있음
+//UIView에게 데이터를 전달해주는 매개체, 하나의 패널을 담당함, 안에 UIContainer가 들어있을 수도 있음
+public class UIContainer : MonoBehaviour, IUIContainer<int>
 {
     private void Start()
     {
         //UIController.AddUIContrainer(GetInstanceID(), this);
     }
 
-
-    public void DataBinding(int data)
+    public void DataBinding(in int data)
     {
 
     }
@@ -78,4 +78,6 @@ public class UIContainer : MonoBehaviour //UIView에게 데이터를 전달해주는 매개체
     {
 
     }
+
+    
 }
