@@ -14,8 +14,8 @@ using Object = UnityEngine.Object;
 public class ResourceManager : MonoSingleton<ResourceManager>
 {
 	[SerializeField] private List<AssetLabelReference> _defaultLoadLabels = new();                //인스펙터에서 가져올 라벨들을 지정
-	private MultiKeyDictionary<string, Type, IDataContainer> _labelToDataContainerDic = new();    //라벨과 타입에 해당되는 에셋들을 저장하는 딕셔너리
-	private Dictionary<Type, IDataContainer> _typeToDataContainerDic = new();                     //타입에 해당되는 에셋들을 저장하는 딕셔너리
+	private MultiKeyDictionary<string, Type, IResourceContainer> _labelToDataContainerDic = new();    //라벨과 타입에 해당되는 에셋들을 저장하는 딕셔너리
+	private Dictionary<Type, IResourceContainer> _typeToDataContainerDic = new();                     //타입에 해당되는 에셋들을 저장하는 딕셔너리
 
 	private MethodInfo _cachedMethod = null; //리플렉션 중복을 막기 위해 미리 캐시해준다.
 
@@ -158,10 +158,10 @@ public class ResourceManager : MonoSingleton<ResourceManager>
 	{
 		if (!_typeToDataContainerDic.ContainsKey(typeof(T)))
 		{
-			_typeToDataContainerDic.Add(typeof(T), new DataContainer<T>());
+			_typeToDataContainerDic.Add(typeof(T), new ResourceContainer<T>());
 		}
 
-		DataContainer<T> container = _typeToDataContainerDic[typeof(T)] as DataContainer<T>;
+		ResourceContainer<T> container = _typeToDataContainerDic[typeof(T)] as ResourceContainer<T>;
 		container.AddData(key, value);
 	}
 
@@ -169,9 +169,9 @@ public class ResourceManager : MonoSingleton<ResourceManager>
 	{
 		if (!_labelToDataContainerDic.ContainsKey(label, typeof(T)))
 		{
-			_labelToDataContainerDic.Add(label, typeof(T), new DataContainer<T>());
+			_labelToDataContainerDic.Add(label, typeof(T), new ResourceContainer<T>());
 		}
-		DataContainer<T> container = _labelToDataContainerDic[label, typeof(T)] as DataContainer<T>;
+		ResourceContainer<T> container = _labelToDataContainerDic[label, typeof(T)] as ResourceContainer<T>;
 		container.AddData(key, value);
 	}
 

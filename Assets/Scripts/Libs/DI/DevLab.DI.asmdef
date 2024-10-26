@@ -1,0 +1,16 @@
+{
+    "name": "DevLab.DI",
+    "rootNamespace": "DevLab.DI",
+    "references": [
+        "GUID:49b442cf7329cbc4ca3d6ade6be122b7"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+} 

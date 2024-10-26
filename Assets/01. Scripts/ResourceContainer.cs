@@ -3,14 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IDataContainer
+public interface IResourceContainer
 {
     public void AddData(string key, object data);
     public object GetData(string key);
     IEnumerable<object> GetAllValues();
 }
 
-public class DataContainer<T> : IDataContainer where T : class
+public class ResourceContainer<T> : IResourceContainer where T : class
 {
     private Dictionary<int, T> _hashCodeToDataDic = new();
 
