@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Unity.Collections.LowLevel.Unsafe;
@@ -14,7 +14,7 @@ public class DataBindingManager : Singleton<DataBindingManager>
     {
         Type bindingType = dataBinding.GetType();
 
-        if (!_bindings.ContainsKey(bindingType))  // typeÀÌ Ã³À½ ¹ÙÀÎµùµÈ °æ¿ì
+        if (!_bindings.ContainsKey(bindingType))  // typeì´ ì²˜ìŒ ë°”ì¸ë”©ëœ ê²½ìš°
         {
             _bindings[bindingType] = new DataContainer();
 
@@ -57,7 +57,7 @@ public class DataBindingManager : Singleton<DataBindingManager>
             return container.GetData<T>(name);
         }
 
-        Debug.LogError($"¹ÙÀÎµùµÇÁö ¾ÊÀº µ¥ÀÌÅÍ: {name}");
+        Debug.LogError($"ë°”ì¸ë”©ë˜ì§€ ì•Šì€ ë°ì´í„°: {name}");
 
         return default;
     }
@@ -69,7 +69,7 @@ public class DataBindingManager : Singleton<DataBindingManager>
             _bindingMethods[name] = new List<Action<object>>();
         }
 
-        // ¸Ş¼­µå¸¦ ¶÷´Ù·Î Ä³½Ì
+        // ï¿½Ş¼ï¿½ï¿½å¸¦ ï¿½ï¿½ï¿½Ù·ï¿½ Ä³ï¿½ï¿½
         _bindingMethods[name].Add(action);
     }
 }

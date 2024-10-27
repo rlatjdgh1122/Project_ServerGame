@@ -3,24 +3,21 @@ using UnityEngine;
 
 public class TestCompo : MonoBehaviour, ISetBindingTarget
 {
-    [Binding("coin")] private DataBinding<int> coin;
-    [Binding("name")] private DataBinding<string> playerName;
-
-    private void Awake()
-    {
-        coin.Value = 1; // 처음에 coin 값을 1로 설정
-    }
-
-    private void Start()
-    {
-        coin.Value = 3; // coin 값을 3으로 변경
-    }
+    [Binding("coin")] private DataBinding<int> coin = new(3);
+    [Binding("name")] private DataBinding<string> playerName = new("null");
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-              coin.Value += 2;
+            coin.Value *= 2;
+
+        }
+
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            playerName.Value = $"{coin.Value}";
+
         }
     }
 }

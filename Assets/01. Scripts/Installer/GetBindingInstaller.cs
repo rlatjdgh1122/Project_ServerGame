@@ -6,7 +6,7 @@ using UnityEngine.BindingSystem;
 
 public interface IGetBindingTarget { }
 
-[DefaultExecutionOrder(-50)]
+[DefaultExecutionOrder(-150)]
 public class GetBindingInstaller : MonoBehaviour
 {
     void Awake()
@@ -23,7 +23,7 @@ public class GetBindingInstaller : MonoBehaviour
 
         foreach (var method in methods)
         {
-            var bindingAttribute = method.GetCustomAttribute<BindingAttribute>();
+            var bindingAttribute = method.GetCustomAttribute<GetBindingAttribute>();
 
             if (bindingAttribute != null)
             {

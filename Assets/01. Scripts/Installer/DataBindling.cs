@@ -13,8 +13,8 @@ public struct DataBinding<T> where T : IEquatable<T>
             if (!Equals(_value, value))
             {
                 _value = value;
-
-                DataBindingManager.Instance.UpdateBinding(aa, this);
+                //Debug.Log("2 : " + _value.GetHashCode());
+                DataBindingManager.Instance.UpdateBinding(0, this);
             } //end if
         }
     }

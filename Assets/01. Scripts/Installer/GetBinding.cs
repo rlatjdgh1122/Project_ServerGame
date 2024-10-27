@@ -3,9 +3,15 @@ using UnityEngine;
 
 public class GetBinding : MonoBehaviour, IGetBindingTarget
 {
-    [GetBinding("coin")]
+    [GetBinding("coin", typeof(int))]
     public void GetData(int coin)
     {
-        Debug.Log("GetData : " + coin); //처음 : 1, 이후 : 3
+        Debug.Log("GetData : " + coin);
+    }
+
+    [GetBinding("name", typeof(string))]
+    public void GetName(string name)
+    {
+        Debug.Log("GetName : " + name);
     }
 }

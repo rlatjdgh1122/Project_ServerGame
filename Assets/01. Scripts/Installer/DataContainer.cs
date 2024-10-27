@@ -14,8 +14,8 @@ public class DataContainer
         Debug.Log($"2 : {value.GetHashCode()}");
 
         _nameToDataDic.TryAdd(name.GetHashCode(), value);
-        _hashCodeToNameDic.TryAdd(value.GetHashCode(), name);
-        _hashCodeToDataDic.TryAdd(value.GetHashCode(), value);
+        _hashCodeToNameDic.TryAdd(0, name);
+        _hashCodeToDataDic.TryAdd(0, value);
     }
 
     public DataBinding<T> GetData<T>(string name) where T : IEquatable<T>
