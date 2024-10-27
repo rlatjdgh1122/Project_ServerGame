@@ -23,8 +23,9 @@ public struct DataBinding<T> where T : IEquatable<T>
     public DataBinding(T value)
     {
         _value = value;
-        aa = 0;
-        aa = GetHashCode();
+
+        aa = 0; //이런식으로 값을 할당해줘야
+        aa = GetHashCode(); //GetHashCode같이 객체에 있는 함수를 쓸 수 있다.
 
     }
 }
