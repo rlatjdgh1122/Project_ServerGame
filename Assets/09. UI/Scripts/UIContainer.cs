@@ -30,7 +30,7 @@ public abstract class UIView : MonoBehaviour, IUIView
 public interface IUIContainerable { }
 public interface IUIContainer<T> : IUIContainerable where T : struct
 {
-    public void DataBinding(in DataContainer<T> dataContainer);
+    //public void DataBinding(in DataContainer<T> dataContainer);
 }
 
 
