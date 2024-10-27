@@ -20,7 +20,7 @@ public class TestCompo : MonoBehaviour, ISetBindingTarget
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            coin.Value += 2;
+              coin.Value += 2;
         }
     }
 }
