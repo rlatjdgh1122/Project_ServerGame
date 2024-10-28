@@ -1,6 +1,7 @@
 using System;
+using UnityEngine;
 
-namespace UnityEngine.BindingSystem
+namespace Seongho.BindingSystem
 {
     [AttributeUsage(AttributeTargets.Field)]
     public class BindingAttribute : PropertyAttribute

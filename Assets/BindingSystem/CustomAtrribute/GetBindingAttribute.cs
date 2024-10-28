@@ -1,7 +1,6 @@
 using System;
-using System.Reflection;
 
-namespace UnityEngine.BindingSystem
+namespace Seongho.BindingSystem
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class GetBindingAttribute : Attribute
