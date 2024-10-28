@@ -14,7 +14,7 @@ public class BindingInstaller : MonoBehaviour
     private void Awake()
     {
         var setBindings = GetComponents<ISetBindingTarget>();
-      
+
         foreach (var com1 in setBindings)
         {
             RegisterSetBindings(com1);
@@ -32,8 +32,9 @@ public class BindingInstaller : MonoBehaviour
 
             if (bindingAttribute != null)
             {
-                var fieldValue = field.GetValue(component);
-                DataBindingManager.Instance.RegisterBinding(bindingAttribute.Name, fieldValue);
+                var data = field.GetValue(component);
+                int uniqueKey = data.Cast<IGetUniqeKey>().UniqeKey;
+                DataBindingManager.Instance.RegisterDataBinding(bindingAttribute.Name, uniqueKey, data);
 
             } //end if
         } //end foreach

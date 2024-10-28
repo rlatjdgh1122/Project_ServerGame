@@ -1,9 +1,18 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-public struct DataBinding<T> where T : IEquatable<T>
+
+public interface IGetUniqeKey
+{
+    public int UniqeKey { get; }
+}
+
+public struct DataBinding<T> : IGetUniqeKey where T : IEquatable<T>
 {
     private T _value;
+    private readonly int _uniqeKey;
+
+    int IGetUniqeKey.UniqeKey { get => _uniqeKey; }
 
     public T Value
     {
@@ -13,19 +22,18 @@ public struct DataBinding<T> where T : IEquatable<T>
             if (!Equals(_value, value))
             {
                 _value = value;
-                //Debug.Log("2 : " + _value.GetHashCode());
-                DataBindingManager.Instance.UpdateBinding(0, this);
+
+                //데이터가 변경될 때마다 데이터를 업데이트해준다.
+                DataBindingManager.Instance.UpdateDataBinding(_uniqeKey, this);
             } //end if
         }
     }
 
-    private int aa;
     public DataBinding(T value)
     {
         _value = value;
-
-        aa = 0; //이런식으로 값을 할당해줘야
-        aa = GetHashCode(); //GetHashCode같이 객체에 있는 함수를 쓸 수 있다.
+        _uniqeKey = default; //이런식으로 값을 할당해줘야
+        _uniqeKey = GetHashCode(); //GetHashCode같이 객체에 있는 함수를 쓸 수 있다.
 
     }
 }

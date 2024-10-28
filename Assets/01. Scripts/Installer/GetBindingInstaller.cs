@@ -1,35 +1,44 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.BindingSystem;
 
 public interface IGetBindingTarget { }
 
-[DefaultExecutionOrder(-150)]
+[DefaultExecutionOrder(-100)]
 public class GetBindingInstaller : MonoBehaviour
 {
     void Awake()
     {
-        var GetBindings = GetComponents<IGetBindingTarget>();
-        foreach (var com2 in GetBindings)
-        {
-            RegisterGetBindings(com2);
-        }
-    }
-    private void RegisterGetBindings(IGetBindingTarget com2)
-    {
-        var methods = com2.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        //1. IGetBindingTarget를 상속받은 컴포넌트를 찾는다.
+        var GetBindings = GetComponents<IGetBindingTarget>(); 
 
-        foreach (var method in methods)
+        foreach (var compo in GetBindings)
+        {
+            RegisterGetBindings(compo);
+
+        } //end foreach
+    }
+
+    private void RegisterGetBindings(IGetBindingTarget compo)
+    {
+        var methods = compo.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+
+        //1. 모든 메서드를 확인해본다.
+        foreach (var method in methods) 
         {
             var bindingAttribute = method.GetCustomAttribute<GetBindingAttribute>();
 
-            if (bindingAttribute != null)
+            //2. GetBinding을 사용한 메서드가 있는지 체크한다.
+            if (bindingAttribute != null) 
             {
-                DataBindingManager.Instance.AAA(bindingAttribute.Name,
-                    value => method.Invoke(com2, new[] { value }));
-            }
-        }
+                //3. 메서드를 캐싱한다.
+                DataBindingManager.Instance.RegisterMethodBinding
+                    (bindingAttribute.Name, 
+                    bindingAttribute.DataType,
+                    value => method.Invoke(compo, new[] { value }));
+
+            } //end if
+        } //end foreach
+
     }
 }

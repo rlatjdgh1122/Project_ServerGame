@@ -6,16 +6,14 @@ using UnityEngine;
 public class DataContainer
 {
     private readonly Dictionary<int, object> _nameToDataDic = new();
-    private readonly Dictionary<int, string> _hashCodeToNameDic = new();
-    private readonly Dictionary<int, object> _hashCodeToDataDic = new();
+    private readonly Dictionary<int, string> _uniqueKeyToNameDic = new();
+    private readonly Dictionary<int, object> _uniqueKeyToDataDic = new();
 
-    public void AddData(string name, object value)
+    public void AddData(string name, int uniqeKey, object value)
     {
-        Debug.Log($"2 : {value.GetHashCode()}");
-
         _nameToDataDic.TryAdd(name.GetHashCode(), value);
-        _hashCodeToNameDic.TryAdd(0, name);
-        _hashCodeToDataDic.TryAdd(0, value);
+        _uniqueKeyToNameDic.TryAdd(uniqeKey, name);
+        _uniqueKeyToDataDic.TryAdd(uniqeKey, value);
     }
 
     public DataBinding<T> GetData<T>(string name) where T : IEquatable<T>
@@ -29,17 +27,17 @@ public class DataContainer
         return default;
     }
 
-    public string GetData(int hashCode)
+    public string GetName(int uniqueKey)
     {
-        return _hashCodeToNameDic[hashCode];
-
+        return _uniqueKeyToNameDic[uniqueKey];
     }
 
-    public void UpdateData(int hashCode, object newData)
+    public void UpdateData(int uniqueKey, object newData)
     {
-        if (_hashCodeToDataDic.ContainsKey(hashCode))
+        if (_uniqueKeyToDataDic.ContainsKey(uniqueKey))
         {
-            _hashCodeToDataDic[hashCode] = newData;
-        }
+            _uniqueKeyToDataDic[uniqueKey] = newData;
+
+        } //end if
     }
 }
