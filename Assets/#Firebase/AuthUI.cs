@@ -33,7 +33,6 @@ public class AuthUI : MonoBehaviour
             }
         });
 
-
     }
 
     public void OnCreate()
