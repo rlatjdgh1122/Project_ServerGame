@@ -6,91 +6,95 @@ using UnityEngine;
 /// </summary>
 public enum TurnType : sbyte
 {
-	None = -1,
-	Red,
-	Blue,
-	Yellow,
-	Green,
-	End
+    None = -1,
+    Red,
+    Blue,
+    Yellow,
+    Green,
+    End
 }
 
 public class TurnManager : NetworkMonoSingleton<TurnManager>
 {
-	public TurnType StartType = TurnType.None;
-	public bool IsMyTurn => _turnTypeNV?.Value == TurnType.None;
+    public TurnType StartType = TurnType.None;
+    public bool IsMyTurn => _turnTypeNV?.Value == TurnType.None;
 
-	private NetworkVariable<TurnType> _turnTypeNV = new();
-	private int _turnIdx = -1;
+    private NetworkVariable<TurnType> _turnTypeNV = new();
+    private int _turnIdx = -1;
 
-	public override void OnNetworkSpawn()
-	{
-		OnResiter();
-	}
+    public override void OnNetworkSpawn()
+    {
+        OnResiter();
+    }
 
-	private void OnResiter()
-	{
-		_turnTypeNV.OnValueChanged += OnChangedValue;
-	}
+    private void OnResiter()
+    {
+        _turnTypeNV.OnValueChanged += OnChangedValue;
+    }
 
 
-	public override void OnDestroy()
-	{
-		base.OnDestroy();
+    public override void OnDestroy()
+    {
+        base.OnDestroy();
 
-		_turnTypeNV.OnValueChanged -= OnChangedValue;
-	}
+        _turnTypeNV.OnValueChanged -= OnChangedValue;
+    }
 
-	private void Update()
-	{
-		if (Input.GetKeyDown(KeyCode.D))
-		{
-			OnTurnChangedNext();
-		}
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            OnTurnChangedNext();
+        }
 
-		if (Input.GetKeyDown(KeyCode.F))
-		{
-			GameStart();
-		}
-	}
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            GameStart();
+        }
+    }
 
-	public void GameStart()
-	{
-		_turnTypeNV.Value = StartType;
-	}
+    public void GameStart()
+    {
+        _turnTypeNV.Value = StartType;
+    }
 
-	private void OnChangedValue(TurnType prevValue, TurnType newValue)
-	{
-		if (prevValue == TurnType.None) return;
+    private void OnChangedValue(TurnType prevValue, TurnType newValue)
+    {
+        if (prevValue == TurnType.None) return;
 
-		Debug.Log(newValue);
+        SignalHub.OnChangedTurnEvent?.Invoke(prevValue, newValue);
 
-		SignalHub.OnChangedTurnEvent?.Invoke(prevValue, newValue);
+        //나의 턴일 경우
+        if (IsMyTurn)
+        {
+            SignalHub.OnMyTurnEvent?.Invoke();
 
-		//나의 턴일 경우
-		if (IsMyTurn)
-		{
-			SignalHub.OnMyTurnEvent?.Invoke();
+        } //end if
 
-		} //end if
-	}
+        else
+        {
+            SignalHub.OnNotMyTurnEvent?.Invoke();
 
-	public TurnType GetTurnTarget()
-	{
-		return _turnTypeNV.Value;
-	}
+        }//end if
+    }
 
-	public void SetTurnTarget(TurnType turnType)
-	{
-		_turnTypeNV.Value = turnType;
-	}
+    public TurnType GetTurnTarget()
+    {
+        return _turnTypeNV.Value;
+    }
 
-	public void OnTurnChangedNext()
-	{
-		//턴이 순서대로 로테이션 되게
-		_turnIdx = (_turnIdx == (int)TurnType.End - 1) ? 0 : _turnIdx + 1;
+    public void SetTurnTarget(TurnType turnType)
+    {
+        _turnTypeNV.Value = turnType;
+    }
 
-		_turnTypeNV.Value = (TurnType)_turnIdx;
-	}
+    public void OnTurnChangedNext()
+    {
+        //턴이 순서대로 로테이션 되게
+        _turnIdx = (_turnIdx == (int)TurnType.End - 1) ? 0 : _turnIdx + 1;
+
+        _turnTypeNV.Value = (TurnType)_turnIdx;
+    }
 
 
 }

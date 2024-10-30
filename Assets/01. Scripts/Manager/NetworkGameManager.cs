@@ -5,9 +5,10 @@ using UnityEngine;
 public class NetworkGameManager : NetworkMonoSingleton<NetworkGameManager>
 {
 	public GameModeType GameMode = GameModeType.Competition;
+
 	public void GameStart()
 	{
-		if (!IsServer) return;
+		if (!IsHost) return;
 
 		//호스트가 플레이어들을 생성해준 뒤
 		GameSpawnManager.Instance.SpawnPlayers(GameMode);

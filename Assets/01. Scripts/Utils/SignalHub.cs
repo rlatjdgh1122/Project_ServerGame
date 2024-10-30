@@ -23,6 +23,7 @@ public static class SignalHub
 
     public static ChangedTurnEvent OnChangedTurnEvent = null;
     public static MyTurnEvent OnMyTurnEvent = null;
+    public static MyTurnEvent OnNotMyTurnEvent = null;
 
     public static AssetLoadCompletedEvent OnAssetLoadCompetedEvent = null;
 }

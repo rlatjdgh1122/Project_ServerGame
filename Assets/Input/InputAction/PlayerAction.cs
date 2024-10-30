@@ -98,6 +98,54 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""MobileInput"",
+            ""id"": ""bcd848a5-2819-4b9d-ac8f-d5466621d1b7"",
+            ""actions"": [
+                {
+                    ""name"": ""TouchInput"",
+                    ""type"": ""Button"",
+                    ""id"": ""599be6fb-10de-4665-a687-ff306c22a546"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DoubleTouchInput"",
+                    ""type"": ""Button"",
+                    ""id"": ""0647bae4-cd1d-4475-ad09-8e2b94888118"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""89980631-0267-4606-a284-69502e339de1"",
+                    ""path"": ""<Touchscreen>/Press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MOBILE"",
+                    ""action"": ""TouchInput"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""19cfcea2-f837-4ef0-b706-081d9e0e1f0a"",
+                    ""path"": ""<Touchscreen>/Press"",
+                    ""interactions"": ""MultiTap(tapTime=0.2,tapDelay=0.75,pressPoint=0.5)"",
+                    ""processors"": """",
+                    ""groups"": ""MOBILE"",
+                    ""action"": ""DoubleTouchInput"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -137,6 +185,10 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_ClickInput = m_UI.FindAction("ClickInput", throwIfNotFound: true);
+        // MobileInput
+        m_MobileInput = asset.FindActionMap("MobileInput", throwIfNotFound: true);
+        m_MobileInput_TouchInput = m_MobileInput.FindAction("TouchInput", throwIfNotFound: true);
+        m_MobileInput_DoubleTouchInput = m_MobileInput.FindAction("DoubleTouchInput", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -294,6 +346,60 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
         }
     }
     public UIActions @UI => new UIActions(this);
+
+    // MobileInput
+    private readonly InputActionMap m_MobileInput;
+    private List<IMobileInputActions> m_MobileInputActionsCallbackInterfaces = new List<IMobileInputActions>();
+    private readonly InputAction m_MobileInput_TouchInput;
+    private readonly InputAction m_MobileInput_DoubleTouchInput;
+    public struct MobileInputActions
+    {
+        private @PlayerAction m_Wrapper;
+        public MobileInputActions(@PlayerAction wrapper) { m_Wrapper = wrapper; }
+        public InputAction @TouchInput => m_Wrapper.m_MobileInput_TouchInput;
+        public InputAction @DoubleTouchInput => m_Wrapper.m_MobileInput_DoubleTouchInput;
+        public InputActionMap Get() { return m_Wrapper.m_MobileInput; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(MobileInputActions set) { return set.Get(); }
+        public void AddCallbacks(IMobileInputActions instance)
+        {
+            if (instance == null || m_Wrapper.m_MobileInputActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_MobileInputActionsCallbackInterfaces.Add(instance);
+            @TouchInput.started += instance.OnTouchInput;
+            @TouchInput.performed += instance.OnTouchInput;
+            @TouchInput.canceled += instance.OnTouchInput;
+            @DoubleTouchInput.started += instance.OnDoubleTouchInput;
+            @DoubleTouchInput.performed += instance.OnDoubleTouchInput;
+            @DoubleTouchInput.canceled += instance.OnDoubleTouchInput;
+        }
+
+        private void UnregisterCallbacks(IMobileInputActions instance)
+        {
+            @TouchInput.started -= instance.OnTouchInput;
+            @TouchInput.performed -= instance.OnTouchInput;
+            @TouchInput.canceled -= instance.OnTouchInput;
+            @DoubleTouchInput.started -= instance.OnDoubleTouchInput;
+            @DoubleTouchInput.performed -= instance.OnDoubleTouchInput;
+            @DoubleTouchInput.canceled -= instance.OnDoubleTouchInput;
+        }
+
+        public void RemoveCallbacks(IMobileInputActions instance)
+        {
+            if (m_Wrapper.m_MobileInputActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IMobileInputActions instance)
+        {
+            foreach (var item in m_Wrapper.m_MobileInputActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_MobileInputActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public MobileInputActions @MobileInput => new MobileInputActions(this);
     private int m_PCSchemeIndex = -1;
     public InputControlScheme PCScheme
     {
@@ -320,5 +426,10 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
     public interface IUIActions
     {
         void OnClickInput(InputAction.CallbackContext context);
+    }
+    public interface IMobileInputActions
+    {
+        void OnTouchInput(InputAction.CallbackContext context);
+        void OnDoubleTouchInput(InputAction.CallbackContext context);
     }
 }

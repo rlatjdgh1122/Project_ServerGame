@@ -2,11 +2,8 @@ using System;
 using Unity.Netcode;
 using UnityEngine;
 
-//NetworkMonoSingleton<UserDataController>
 public class UserDataController : ExpansionNetworkBehaviour
 {
-	//private ILobbyManager _lobbyUI = null;
-
 	private NetworkList<UserData> _userDataList;
 
 	private Action<UserData> OnAddUserEvent = null;
@@ -17,7 +14,7 @@ public class UserDataController : ExpansionNetworkBehaviour
 	{
 		_userDataList = new();
 
-		//_lobbyUI = GetComponent<ILobbyManager>();
+		PlayerPrefs.Save();
 	}
 
 	public void OnResiter(IUserDataEventHandler handler)
@@ -55,34 +52,29 @@ public class UserDataController : ExpansionNetworkBehaviour
 
 		if (IsServer)
 		{
-			//_lobbyUI.OnHostSpawn();
-
 			GameData data = HostSingle.Instance.NetServer.GetUserDataByClientID(NetworkManager.Singleton.LocalClientId);
 			HandleUserJoin(data, NetworkManager.Singleton.LocalClientId);
 
 			HostSingle.Instance.NetServer.OnClientJoinEvent += HandleUserJoin;
 			HostSingle.Instance.NetServer.OnClientLeftEvent += HandleUserLeft;
+
 		} // end if
 	}
 
 	public override void OnNetworkDespawn()
 	{
-		//_lobbyUI.OnColorConfireEvent -= ColorConfirm;
-
 		if (IsClient)
 		{
-			//_lobbyUI.OnClientDespawn();
-
 			_userDataList.OnListChanged -= HandleUserListChanged;
-		}
+
+		} //end if
 
 		if (IsServer)
 		{
-			//_lobbyUI.OnHostDespawn();
-
 			HostSingle.Instance.NetServer.OnClientLeftEvent -= HandleUserLeft;
 			HostSingle.Instance.NetServer.OnClientJoinEvent -= HandleUserJoin;
-		}
+
+		} //end if
 	}
 
 
@@ -172,16 +164,16 @@ public class UserDataController : ExpansionNetworkBehaviour
 		switch (evt.Type)
 		{
 			case NetworkListEvent<UserData>.EventType.Add:
-				//_lobbyUI.OnAddUser(evt.Value);
 				OnAddUserEvent?.Invoke(evt.Value);
 				break;
+
 			case NetworkListEvent<UserData>.EventType.Remove:
-				//_lobbyUI.OnRemoveUser(evt.Value);
 				OnRemoveUserEvent?.Invoke(evt.Value);
 				break;
+
 			case NetworkListEvent<UserData>.EventType.Value:
-				//_lobbyUI.OnValueChangedUser(evt.Value);
 				OnValueChangedUserEvent?.Invoke(evt.Value);
+
 				break;
 		}
 	}

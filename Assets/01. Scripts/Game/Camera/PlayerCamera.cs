@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
 
-public class PlayerCamera : ExpansionNetworkBehaviour
+public class PlayerCamera : ExpansionMonoBehaviour
 {
 	[SerializeField] private float _zoomSize = 5f;
 	private CinemachineVirtualCamera _camera = null;

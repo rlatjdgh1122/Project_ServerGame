@@ -6,21 +6,19 @@ public interface ITurnChangedHandler : IInterfaceSetUpHandler
     {
         SignalHub.OnChangedTurnEvent += OnTurnChanged;
         SignalHub.OnMyTurnEvent += OnMyTurn;
+        SignalHub.OnNotMyTurnEvent += OnNotMyTurn;
     }
 
     void IInterfaceSetUpHandler.IDestroy()
     {
         SignalHub.OnChangedTurnEvent -= OnTurnChanged;
         SignalHub.OnMyTurnEvent -= OnMyTurn;
+        SignalHub.OnNotMyTurnEvent -= OnNotMyTurn;
     }
 
-    public void OnTurnChanged(TurnType prevType, TurnType newType)
-    {
+    public void OnTurnChanged(TurnType prevType, TurnType newType) { }
 
-    }
+    public void OnMyTurn() { }
 
-    public void OnMyTurn()
-    {
-
-    }
+    public void OnNotMyTurn() { }
 }

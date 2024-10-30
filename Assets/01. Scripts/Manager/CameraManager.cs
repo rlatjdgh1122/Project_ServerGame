@@ -1,18 +1,19 @@
 using ExtensionMethod.Dictionary;
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 
-public class CameraManager : NetworkMonoSingleton<CameraManager>
+public class CameraManager : ExpansionMonoBehaviour, IGameFlowHandler
 {
-	private Dictionary<ulong, PlayerCamera> _clientIdToCameraDic = new();
+    [SerializeField] private PlayerCamera _camera = null;
 
-	public void Add(ulong id, PlayerCamera camera)
-	{
-		_clientIdToCameraDic.Add(id, camera);
-	}
+    void IGameFlowHandler.OnGameStart()
+    {
+        _camera = Instantiate(_camera);
+    }
 
-	public void ShowPlayerCamera(ulong clientId)
-	{
-		//clientId와 같은 키를 가진 카메라는 우선순위를 높혀주고 나머진 낮혀줌
-		_clientIdToCameraDic.KeyExcept(clientId, result => result.SetPriority(10), other => other.SetPriority(1));
-	}
+    public void ShowPlayerCamera(ulong clientId)
+    {
+
+    }
 }

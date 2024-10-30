@@ -13,7 +13,6 @@ public static class UIManager<T> where T : IUITarget
 {
     private static Dictionary<(Type type, string name), T> _uiTargetDatas = new();
 
-
     public static T GetUI(string name)
     {
         var key = (typeof(T), name);
@@ -53,5 +52,7 @@ public class GetUI : MonoBehaviour
     {
         UIManager<IUIWarningText>.GetUI("wqer").ShowText("로그인을 할 수 없습니다.", 3f);
 
+        UIManager<IUIPop>.GetUI("werq").Pop();
+        //UIManager<UIPopupController>.GetUI("werq").GetCurrentUI;
     }
 }

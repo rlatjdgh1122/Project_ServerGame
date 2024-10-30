@@ -2,6 +2,7 @@ using ExtensionMethod.Dictionary;
 using ExtensionMethod.List;
 using System;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -9,44 +10,44 @@ using UnityEngine.UI;
 /// <summary>
 /// 경쟁모드 로비 UI
 /// </summary>
-public class CompetitionLobbyUI : ExpansionMonoBehaviour, ILobbyManager
+public class CompetitionLobbyUI : ExpansionNetworkBehaviour, ILobbyManager
 {
-	public UserNameContainer NameContainer = null;
+    public UserNameContainer NameContainer = null;
 
-	public UserDataController DataController = null;
+    public UserDataController DataController = null;
 
-	public Button GameStartButton = null;
-	public Button ColorSelectButton = null;
+    public Button GameStartButton = null;
+    public Button ColorSelectButton = null;
 
-	public UnityEvent OnSucceededGameStartEvent = null;
-	public UnityEvent OnFailedGameStartEvent = null;
+    public UnityEvent OnSucceededGameStartEvent = null;
+    public UnityEvent OnFailedGameStartEvent = null;
 
-	public List<LobbyColorButton> ColorButtonList = new();
-	public TurnType SelectTurnType = TurnType.None;
+    public List<LobbyColorButton> ColorButtonList = new();
+    public TurnType SelectTurnType = TurnType.None;
 
-	private Dictionary<TurnType, LobbyColorButton> _colorToButtonDic = new();
-	private List<UserData> _userDataList = new List<UserData>();
+    private Dictionary<TurnType, LobbyColorButton> _colorToButtonDic = new();
+    private List<UserData> _userDataList = new List<UserData>();
 
-	private void Awake()
-	{
-		DataController.OnResiter(this);
+    private void Awake()
+    {
+        DataController.OnResiter(this);
 
-		ColorSelectButton.interactable = false;
+        ColorSelectButton.interactable = false;
 
-		foreach (var button in ColorButtonList)
-		{
-			button.OnClickEvent += HandleSelectedeColor;
-			_colorToButtonDic.Add(button.ColorType, button);
+        foreach (var button in ColorButtonList)
+        {
+            button.OnClickEvent += HandleSelectedeColor;
+            _colorToButtonDic.Add(button.ColorType, button);
 
-		} //end foreach
-	}
+        } //end foreach
+    }
 
-	private void Start()
-	{
-		//UserDataController.Instance.OnResiter(this);
-	}
+    private void Start()
+    {
+        //UserDataController.Instance.OnResiter(this);
+    }
 
-	/*public override void OnNetworkSpawn()
+    /*public override void OnNetworkSpawn()
 	{
 
 		if (IsClient)
@@ -61,121 +62,148 @@ public class CompetitionLobbyUI : ExpansionMonoBehaviour, ILobbyManager
 	}*/
 
 
-	public void OnGameStart()
-	{
-		if (CheckAllReady())
-		{
-			OnSucceededGameStartEvent?.Invoke();
+    public void OnGameStart()
+    {
+        if (CheckAllReady())
+        {
+            OnSucceddedEventHanlderServerRpc();
 
-		} //end if
-		else
-		{
-			OnFailedGameStartEvent?.Invoke();
+        } //end if
+        else
+        {
+            OnFailedEventHanlderServerRpc();
 
-		} //end else
-	}
+        } //end else
+    }
 
-	public void OnAddUser(UserData data)
-	{
-		//이름 생성
-		NameContainer.CreateUserData(data);
+    [ServerRpc]
+    private void OnSucceddedEventHanlderServerRpc()
+    {
+        OnSucceddedEventHanlderClientRpc();
+    }
 
-		_userDataList.Add(data);
+    [ClientRpc]
+    private void OnSucceddedEventHanlderClientRpc()
+    {
+        OnSucceededGameStartEvent?.Invoke();
+    }
 
-		//기존에 있던 유저가 이미 선택한 상황이라면
-		if (data.turnType != TurnType.None)
-		{
-			OnValueChangedUser(data);
+    [ServerRpc]
+    private void OnFailedEventHanlderServerRpc()
+    {
+        OnFailedEventHanlderClientRpc();
+    }
 
-		} //end if
-	}
-
-	public void OnRemoveUser(UserData data)
-	{
-		NameContainer.RemoveUserData(data);
-
-		if (_colorToButtonDic.TryGetValue(data.turnType, out var button))
-		{
-			button.OnLeave();
-			_userDataList.Remove(data);
-		}
-	}
-
-	public void OnValueChangedUser(UserData data)
-	{
-		NameContainer.ChangedUserData(data);
-
-		if (_colorToButtonDic.TryGetValue(data.turnType, out var button))
-		{
-			button.OnConfirm();
-
-			int idx = FindIndex(data.clientId);
-			if (idx < 0) return;
-
-			_userDataList[idx] = data;
+    [ClientRpc]
+    private void OnFailedEventHanlderClientRpc()
+    {
+        OnFailedGameStartEvent?.Invoke();
+    }
 
 
-			//내가 고를려고 했던 것을 골랐을때 None으로 취소시켜줌
-			if (data.turnType == SelectTurnType)
-			{
-				SelectTurnType = TurnType.None;
-				ColorSelectButton.interactable = false;
-
-			} //end if
-		} //end if
-	}
-
-	public void OnColorConfirm()
-	{
-		//선택했으면 다 꺼줌
-		ColorButtonList.ForEach(btn => btn.SetInteractable(false));
-
-		//서버에 RPC날려서 모든 클라에 적용
-		DataController.ColorConfirm(SelectTurnType);
-	}
-
-	private void HandleSelectedeColor(LobbyColorButton button)
-	{
-		SelectTurnType = button.ColorType;
-		ColorSelectButton.interactable = true;
-		ColorButtonList.ObjExcept(button, btns => btns.OnDeSelected());
-	}
-
-	/// <summary>
-	/// 모든 플레이어가 준비가 되었는지 확인하는 함수
-	/// </summary>
-	private bool CheckAllReady()
-	{
-		//모든 클라이언트가 레디를 해야함
-		return _userDataList.TrueForAll(data => data.turnType != TurnType.None);
-	}
-
-	private int FindIndex(ulong clientID)
-	{
-		for (int i = 0; i < _userDataList.Count; ++i)
-		{
-			if (_userDataList[i].clientId != clientID) continue;
-
-			return i;
-		}
-
-		return -1;
-	}
 
 
-	public void OnDestroy()
-	{
-		//base.OnDestroy();
+    public void OnAddUser(UserData data)
+    {
+        //이름 생성
+        NameContainer.CreateUserData(data);
 
-		foreach (var button in ColorButtonList)
-		{
-			button.OnClickEvent -= HandleSelectedeColor;
+        _userDataList.Add(data);
 
-		} //end foreach
+        //기존에 있던 유저가 이미 선택한 상황이라면
+        if (data.turnType != TurnType.None)
+        {
+            OnValueChangedUser(data);
 
-		_colorToButtonDic.TryClear();
-		_userDataList.TryClear();
+        } //end if
+    }
 
-		DataController.RemoveResiter(this);
-	}
+    public void OnRemoveUser(UserData data)
+    {
+        NameContainer.RemoveUserData(data);
+
+        if (_colorToButtonDic.TryGetValue(data.turnType, out var button))
+        {
+            button.OnLeave();
+            _userDataList.Remove(data);
+        }
+    }
+
+    public void OnValueChangedUser(UserData data)
+    {
+        NameContainer.ChangedUserData(data);
+
+        if (_colorToButtonDic.TryGetValue(data.turnType, out var button))
+        {
+            button.OnConfirm();
+
+            int idx = FindIndex(data.clientId);
+            if (idx < 0) return;
+
+            _userDataList[idx] = data;
+
+
+            //내가 고를려고 했던 것을 골랐을때 None으로 취소시켜줌
+            if (data.turnType == SelectTurnType)
+            {
+                SelectTurnType = TurnType.None;
+                ColorSelectButton.interactable = false;
+
+            } //end if
+        } //end if
+    }
+
+    public void OnColorConfirm()
+    {
+        //선택했으면 다 꺼줌
+        ColorButtonList.ForEach(btn => btn.SetInteractable(false));
+
+        //서버에 RPC날려서 모든 클라에 적용
+        DataController.ColorConfirm(SelectTurnType);
+    }
+
+    private void HandleSelectedeColor(LobbyColorButton button)
+    {
+        SelectTurnType = button.ColorType;
+        ColorSelectButton.interactable = true;
+        ColorButtonList.ObjExcept(button, btns => btns.OnDeSelected());
+    }
+
+    /// <summary>
+    /// 모든 플레이어가 준비가 되었는지 확인하는 함수
+    /// </summary>
+    private bool CheckAllReady()
+    {
+        //모든 클라이언트가 레디를 해야함
+        return _userDataList.TrueForAll(data => data.turnType != TurnType.None);
+    }
+
+    private int FindIndex(ulong clientID)
+    {
+        for (int i = 0; i < _userDataList.Count; ++i)
+        {
+            if (_userDataList[i].clientId != clientID) continue;
+
+            return i;
+        }
+
+        return -1;
+    }
+
+
+    public void OnDestroy()
+    {
+        //base.OnDestroy();
+
+        foreach (var button in ColorButtonList)
+        {
+            button.OnClickEvent -= HandleSelectedeColor;
+
+        } //end foreach
+
+        _colorToButtonDic.TryClear();
+        _userDataList.TryClear();
+
+        DataController.RemoveResiter(this);
+    }
 }

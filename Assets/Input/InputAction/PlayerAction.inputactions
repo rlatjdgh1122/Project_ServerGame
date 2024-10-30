@@ -76,6 +76,54 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "MobileInput",
+            "id": "bcd848a5-2819-4b9d-ac8f-d5466621d1b7",
+            "actions": [
+                {
+                    "name": "TouchInput",
+                    "type": "Button",
+                    "id": "599be6fb-10de-4665-a687-ff306c22a546",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "DoubleTouchInput",
+                    "type": "Button",
+                    "id": "0647bae4-cd1d-4475-ad09-8e2b94888118",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "89980631-0267-4606-a284-69502e339de1",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "MOBILE",
+                    "action": "TouchInput",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "19cfcea2-f837-4ef0-b706-081d9e0e1f0a",
+                    "path": "<Touchscreen>/Press",
+                    "interactions": "MultiTap(tapTime=0.2,tapDelay=0.75,pressPoint=0.5)",
+                    "processors": "",
+                    "groups": "MOBILE",
+                    "action": "DoubleTouchInput",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

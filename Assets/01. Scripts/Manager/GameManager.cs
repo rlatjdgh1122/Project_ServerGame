@@ -11,13 +11,4 @@ public class GameManager : MonoBehaviour
 	{
 		InputManager.ChangedInputType(_initInputType);
 	}
-
-	private void Update()
-	{
-		if (Input.GetKeyDown(KeyCode.S))
-		{
-			NetworkGameManager.Instance.GameStart();
-		}
-
-	}
 }
