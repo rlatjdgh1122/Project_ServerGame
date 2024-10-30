@@ -6,7 +6,7 @@ public class UIContainer : UIElement, IUIContainer
 
     public override void Awake()
     {
-
+        UIManager<>
     }
 
 
