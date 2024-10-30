@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -45,24 +46,6 @@ public static class UIManager<T> where T : IUITarget
         } //end else
     }
 }
-
-public interface IUIWarningText : IUITarget
-{
-    public void ShowText(string text, float duration);
-}
-
-public class WarningUI : UIElement, IUITarget
-{
-    [SerializeField] private TextMeshPro _warningText = null;
-
-    public void ShowText(string text, float duration)
-    {
-        
-    }
-}
-
-
-
 
 public class GetUI : MonoBehaviour
 {
