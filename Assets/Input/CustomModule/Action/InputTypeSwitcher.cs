@@ -13,13 +13,13 @@ namespace Seongho.InputSystem
                 case INPUT_TYPE.Player:
 
                     Input.UI.Disable();
-                    Input.Player.Enable();
+                    Input.Mobile.Enable();
 
                     break;
 
                 case INPUT_TYPE.UI:
 
-                    Input.Player.Disable();
+                    Input.Mobile.Disable();
                     Input.UI.Enable();
 
                     break;

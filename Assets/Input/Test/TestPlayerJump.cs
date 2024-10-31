@@ -7,12 +7,12 @@ namespace Seongho.InputSystem
         [Range(5f, 15f)]
         public float JumpPower = 10f;
 
-        private IInputHandler<HASH_INPUT_PLAYER> _input = null;
+        private IInputHandler<HASH_INPUT_MOBILE> _input = null;
         private Rigidbody2D _rb = null;
 
         private void Awake()
         {
-            _input = GetComponent<IInputHandler<HASH_INPUT_PLAYER>>();
+            _input = GetComponent<IInputHandler<HASH_INPUT_MOBILE>>();
             _rb = GetComponent<Rigidbody2D>();
         }
 
@@ -21,7 +21,7 @@ namespace Seongho.InputSystem
         /// </summary>
         private void Start()
         {
-            _input.OnRegisterEvent(HASH_INPUT_PLAYER.Space, OnJump);
+            _input.OnRegisterEvent(HASH_INPUT_MOBILE.Double_Touch, OnJump);
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace Seongho.InputSystem
         /// </summary>
         private void OnDestroy()
         {
-            _input.RemoveRegisterEvent(HASH_INPUT_PLAYER.Space, OnJump);
+            _input.RemoveRegisterEvent(HASH_INPUT_MOBILE.Double_Touch, OnJump);
         }
 
         private void OnJump(INPUT_KEY_STATE key, object[] args)

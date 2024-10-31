@@ -34,7 +34,12 @@ public class PlayerMoveController : ExpansionMonoBehaviour, ISetupHandler, IPlay
         _rigid.SetVelocity(Vector2.zero);
         _rigid.SetAngularVelocity(0);
 
-        _draw.OnDraw(_saveVelocity);
+        if (_saveVelocity != Vector2.zero)
+        {
+            _draw.OnDraw(_saveVelocity);
+
+        }//end if
+
     }
 
 }

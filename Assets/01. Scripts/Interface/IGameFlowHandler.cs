@@ -6,16 +6,19 @@ public interface IGameFlowHandler : IInterfaceSetUpHandler
 {
 	void IInterfaceSetUpHandler.IStart()
 	{
+		SignalHub.OnGameInitEvent += OnGameInit;
 		SignalHub.OnGameStartEvent += OnGameStart;
 		SignalHub.OnGameEndEvent += OnGameEnd;
 	}
 
 	void IInterfaceSetUpHandler.IDestroy()
 	{
+		SignalHub.OnGameInitEvent -= OnGameInit;
 		SignalHub.OnGameStartEvent -= OnGameStart;
 		SignalHub.OnGameEndEvent -= OnGameEnd;
 	}
 
-	public void OnGameStart() { }
+	public void OnGameInit() { }
+    public void OnGameStart() { }
 	public void OnGameEnd() { }
 }

@@ -6,12 +6,12 @@ namespace Seongho.InputSystem
     {
         public Transform TargetTrm = null;
 
-        private IInputHandler<HASH_INPUT_PLAYER> _input = null;
+        private IInputHandler<HASH_INPUT_MOBILE> _input = null;
         private LineRenderer _lr = null;
 
         private void Awake()
         {
-            _input = GetComponent<IInputHandler<HASH_INPUT_PLAYER>>();
+            _input = GetComponent<IInputHandler<HASH_INPUT_MOBILE>>();
             _lr = GetComponent<LineRenderer>();
 
             _lr.enabled = false;
@@ -22,7 +22,7 @@ namespace Seongho.InputSystem
         /// </summary>
         private void Start()
         {
-            _input.OnRegisterEvent(HASH_INPUT_PLAYER.LeftClick, OnClick);
+            _input.OnRegisterEvent(HASH_INPUT_MOBILE.Touch, OnClick);
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Seongho.InputSystem
         /// </summary>
         private void OnDestroy()
         {
-            _input.RemoveRegisterEvent(HASH_INPUT_PLAYER.LeftClick, OnClick);
+            _input.RemoveRegisterEvent(HASH_INPUT_MOBILE.Touch, OnClick);
         }
 
         private void OnClick(INPUT_KEY_STATE key, object[] args)

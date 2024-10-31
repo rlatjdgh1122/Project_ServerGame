@@ -6,7 +6,7 @@ namespace Seongho.InputSystem
         public void RemoveRegisterEvent(T key, InputParams action);
     }
 
-    public interface IPlayerInput : IInputHandler<HASH_INPUT_PLAYER>, PlayerAction.IPlayerActions
+    public interface IMobileInput : IInputHandler<HASH_INPUT_MOBILE>, PlayerAction.IMobileActions
     {
         public void InputSetting();
     }

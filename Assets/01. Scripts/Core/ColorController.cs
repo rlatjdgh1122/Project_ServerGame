@@ -10,9 +10,9 @@ public static class ColorController
 	{
 		_typeToColorDic.Add(TurnType.None, Color.white);
 		_typeToColorDic.Add(TurnType.Blue, Color.blue);
-		_typeToColorDic.Add(TurnType.Yellow, Color.yellow);
+		//_typeToColorDic.Add(TurnType.Yellow, Color.yellow);
 		_typeToColorDic.Add(TurnType.Red, Color.red);
-		_typeToColorDic.Add(TurnType.Green, Color.green);
+		//_typeToColorDic.Add(TurnType.Green, Color.green);
 	}
 
 	public static Color GetColorByTurnType(TurnType type)

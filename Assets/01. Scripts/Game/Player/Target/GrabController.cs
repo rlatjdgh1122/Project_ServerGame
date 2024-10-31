@@ -3,12 +3,12 @@ using Seongho.InputSystem;
 
 public class GrabController : ExpansionMonoBehaviour, ISetupHandler, IPlayerStopHandler, INetworkSpawnHandler
 {
-	private IInputHandler<HASH_INPUT_PLAYER> _inputHandler = null;
+	private IInputHandler<HASH_INPUT_MOBILE> _inputHandler = null;
 	private IGrabHandler _grabHandler = null;
 
 	public void Setup(ComponentList list)
 	{
-		_inputHandler = list.Find<IInputHandler<HASH_INPUT_PLAYER>>();
+		_inputHandler = list.Find<IInputHandler<HASH_INPUT_MOBILE>>();
 		_grabHandler = list.Find<IGrabHandler>();
 	}
 
@@ -24,12 +24,12 @@ public class GrabController : ExpansionMonoBehaviour, ISetupHandler, IPlayerStop
 
 	private void OnRegister()
 	{
-		_inputHandler.OnRegisterEvent(HASH_INPUT_PLAYER.LeftClick, FindTarget);
+		_inputHandler.OnRegisterEvent(HASH_INPUT_MOBILE.Touch, FindTarget);
 	}
 
 	private void RemoveRegister()
 	{
-		_inputHandler.RemoveRegisterEvent(HASH_INPUT_PLAYER.LeftClick, FindTarget);
+		_inputHandler.RemoveRegisterEvent(HASH_INPUT_MOBILE.Touch, FindTarget);
 	}
 
 	private void FindTarget(INPUT_KEY_STATE key, object[] args)

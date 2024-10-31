@@ -2,54 +2,6 @@
     "name": "PlayerAction",
     "maps": [
         {
-            "name": "Player",
-            "id": "4f5a0777-a20f-485b-903a-268e6c78850b",
-            "actions": [
-                {
-                    "name": "LeftClickInput",
-                    "type": "Button",
-                    "id": "d16828d3-fe38-4bb1-87be-2749b526d9fb",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "SpaceClickInput",
-                    "type": "Button",
-                    "id": "690b7a5e-a4c3-4ce0-b354-b97342a84aa8",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "",
-                    "id": "28745b83-29e0-434b-a251-c4a36c8dfad7",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "PC",
-                    "action": "LeftClickInput",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "23ad3455-813d-4080-8f95-dd986c7b9aff",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "PC",
-                    "action": "SpaceClickInput",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                }
-            ]
-        },
-        {
             "name": "UI",
             "id": "b8c9ade1-cbb6-4a5a-b585-b9dbb018acc9",
             "actions": [
@@ -78,7 +30,7 @@
             ]
         },
         {
-            "name": "MobileInput",
+            "name": "Mobile",
             "id": "bcd848a5-2819-4b9d-ac8f-d5466621d1b7",
             "actions": [
                 {

@@ -405,7 +405,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &193999815
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1402,7 +1402,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &828716433
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1745,9 +1745,21 @@ MonoBehaviour:
           m_StringArgument: GameScene
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1973210406}
+        m_TargetAssemblyTypeName: NetworkGameManager, Assembly-CSharp
+        m_MethodName: OnGameInit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
       - m_Target: {fileID: 1087493590}
         m_TargetAssemblyTypeName: GameStartTimerUI, Assembly-CSharp
-        m_MethodName: OnGameStartTimer
+        m_MethodName: OnStartTimer
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1763,8 +1775,6 @@ MonoBehaviour:
   ColorButtonList:
   - {fileID: 1791597630}
   - {fileID: 2076958441}
-  - {fileID: 193999816}
-  - {fileID: 828716434}
   SelectTurnType: -1
 --- !u!114 &1001718453
 MonoBehaviour:
@@ -1813,7 +1823,7 @@ GameObject:
   - component: {fileID: 1087493592}
   - component: {fileID: 1087493590}
   m_Layer: 0
-  m_Name: TimerSystem
+  m_Name: TimerManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1831,7 +1841,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1697f0721fea86249b72c1de3eaf7b0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartTimer: 5
+  StartTimer: 3
   TimerText: {fileID: 1404552455}
   OnEndTimerEvent:
     m_PersistentCalls:
@@ -4112,11 +4122,11 @@ RectTransform:
   - {fileID: 1791902739}
   m_Father: {fileID: 1183861032}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -170, y: 120}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: -120, y: 120}
   m_SizeDelta: {x: 200, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &2076958438
 MonoBehaviour:
   m_ObjectHideFlags: 0

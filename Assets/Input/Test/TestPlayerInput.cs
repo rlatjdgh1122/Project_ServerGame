@@ -3,10 +3,10 @@ using UnityEngine.InputSystem;
 
 namespace Seongho.InputSystem
 {
-    public class TestPlayerInput : MonoBehaviour, IPlayerInput
+    public class TestPlayerInput : MonoBehaviour
     {
-
-        private InputMachine<HASH_INPUT_PLAYER> _inputContainer = null;
+/*
+        private InputMachine<HASH_INPUT_MOBILE> _inputContainer = null;
 
         private void Awake()
         {
@@ -27,7 +27,7 @@ namespace Seongho.InputSystem
         /// <summary>
         /// 이벤트들을 HashKey에 맞춰 연결해줍니다.
         /// </summary>
-        public void OnRegisterEvent(HASH_INPUT_PLAYER key, InputParams action)
+        public void OnRegisterEvent(HASH_INPUT_MOBILE key, InputParams action)
         {
             _inputContainer.OnRegisterEvent(key, action);
         }
@@ -35,7 +35,7 @@ namespace Seongho.InputSystem
         /// <summary>
         /// 이벤트들을 HashKey에 맞춰 해제해줍니다.
         /// </summary>
-        public void RemoveRegisterEvent(HASH_INPUT_PLAYER key, InputParams action)
+        public void RemoveRegisterEvent(HASH_INPUT_MOBILE key, InputParams action)
         {
             _inputContainer.RemoveRegisterEvent(key, action);
         }
@@ -53,7 +53,7 @@ namespace Seongho.InputSystem
             // 3. InputHolding을 해줄것인지 안해줄것인지에 대한 여부
             // 4. 따로 넘겨줄 params object - 여러개의 object를 넘겨줄 수 있음 (비워놔도됨)
             // *꿀팁 : InputHolding을 사용하지 않을 경우엔 false로 해주는 것이 성능상으로 좋다.
-            _inputContainer.InputRunning(HASH_INPUT_PLAYER.LeftClick, context, true);
+            _inputContainer.InputRunning(HASH_INPUT_MOBILE.Touch, context, true);
 
         }
 
@@ -61,7 +61,7 @@ namespace Seongho.InputSystem
         {
             //스페이스 바를 누를 경우 연결된 이벤트 실행
 
-            _inputContainer.InputRunning(HASH_INPUT_PLAYER.Space, context, false);
-        }
+            _inputContainer.InputRunning(HASH_INPUT_MOBILE.Double_Touch, context, false);
+        }*/
     }
 }

@@ -21,7 +21,7 @@ public class GameStartTimerUI : ExpansionMonoBehaviour, ITimerEventHandler
     }
 
 
-    public void OnGameStartTimer()
+    public void OnStartTimer()
     {
         _timer.StartTimer();
     }

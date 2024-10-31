@@ -29,8 +29,7 @@ public class GameSpawnManager : NetworkMonoSingleton<GameSpawnManager>
 			Player player = SpawnerManager.Instance.SpawnPlayer(id, modeType);
 			player.SetPostion(_currentPos);
 
-
-		} //end foreach
+        } //end foreach
 
 	}
 }

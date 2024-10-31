@@ -18,8 +18,9 @@ public delegate void AssetLoadCompletedEvent();
 
 public static class SignalHub
 {
-    public static GameStartEvent OnGameStartEvent = null;
-    public static GameEndEvent OnGameEndEvent = null;
+    public static GameStartEvent OnGameInitEvent = null;   //게임씬이 초기화 될 때
+    public static GameStartEvent OnGameStartEvent = null;  //게임이 시작할 때
+    public static GameEndEvent OnGameEndEvent = null;      //게임이 끝날 때
 
     public static ChangedTurnEvent OnChangedTurnEvent = null;
     public static MyTurnEvent OnMyTurnEvent = null;

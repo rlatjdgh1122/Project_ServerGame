@@ -24,54 +24,6 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
     ""name"": ""PlayerAction"",
     ""maps"": [
         {
-            ""name"": ""Player"",
-            ""id"": ""4f5a0777-a20f-485b-903a-268e6c78850b"",
-            ""actions"": [
-                {
-                    ""name"": ""LeftClickInput"",
-                    ""type"": ""Button"",
-                    ""id"": ""d16828d3-fe38-4bb1-87be-2749b526d9fb"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""SpaceClickInput"",
-                    ""type"": ""Button"",
-                    ""id"": ""690b7a5e-a4c3-4ce0-b354-b97342a84aa8"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                }
-            ],
-            ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""28745b83-29e0-434b-a251-c4a36c8dfad7"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PC"",
-                    ""action"": ""LeftClickInput"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""23ad3455-813d-4080-8f95-dd986c7b9aff"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""PC"",
-                    ""action"": ""SpaceClickInput"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                }
-            ]
-        },
-        {
             ""name"": ""UI"",
             ""id"": ""b8c9ade1-cbb6-4a5a-b585-b9dbb018acc9"",
             ""actions"": [
@@ -100,7 +52,7 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
             ]
         },
         {
-            ""name"": ""MobileInput"",
+            ""name"": ""Mobile"",
             ""id"": ""bcd848a5-2819-4b9d-ac8f-d5466621d1b7"",
             ""actions"": [
                 {
@@ -178,17 +130,13 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
         }
     ]
 }");
-        // Player
-        m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
-        m_Player_LeftClickInput = m_Player.FindAction("LeftClickInput", throwIfNotFound: true);
-        m_Player_SpaceClickInput = m_Player.FindAction("SpaceClickInput", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_ClickInput = m_UI.FindAction("ClickInput", throwIfNotFound: true);
-        // MobileInput
-        m_MobileInput = asset.FindActionMap("MobileInput", throwIfNotFound: true);
-        m_MobileInput_TouchInput = m_MobileInput.FindAction("TouchInput", throwIfNotFound: true);
-        m_MobileInput_DoubleTouchInput = m_MobileInput.FindAction("DoubleTouchInput", throwIfNotFound: true);
+        // Mobile
+        m_Mobile = asset.FindActionMap("Mobile", throwIfNotFound: true);
+        m_Mobile_TouchInput = m_Mobile.FindAction("TouchInput", throwIfNotFound: true);
+        m_Mobile_DoubleTouchInput = m_Mobile.FindAction("DoubleTouchInput", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -247,60 +195,6 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // Player
-    private readonly InputActionMap m_Player;
-    private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
-    private readonly InputAction m_Player_LeftClickInput;
-    private readonly InputAction m_Player_SpaceClickInput;
-    public struct PlayerActions
-    {
-        private @PlayerAction m_Wrapper;
-        public PlayerActions(@PlayerAction wrapper) { m_Wrapper = wrapper; }
-        public InputAction @LeftClickInput => m_Wrapper.m_Player_LeftClickInput;
-        public InputAction @SpaceClickInput => m_Wrapper.m_Player_SpaceClickInput;
-        public InputActionMap Get() { return m_Wrapper.m_Player; }
-        public void Enable() { Get().Enable(); }
-        public void Disable() { Get().Disable(); }
-        public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(PlayerActions set) { return set.Get(); }
-        public void AddCallbacks(IPlayerActions instance)
-        {
-            if (instance == null || m_Wrapper.m_PlayerActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_PlayerActionsCallbackInterfaces.Add(instance);
-            @LeftClickInput.started += instance.OnLeftClickInput;
-            @LeftClickInput.performed += instance.OnLeftClickInput;
-            @LeftClickInput.canceled += instance.OnLeftClickInput;
-            @SpaceClickInput.started += instance.OnSpaceClickInput;
-            @SpaceClickInput.performed += instance.OnSpaceClickInput;
-            @SpaceClickInput.canceled += instance.OnSpaceClickInput;
-        }
-
-        private void UnregisterCallbacks(IPlayerActions instance)
-        {
-            @LeftClickInput.started -= instance.OnLeftClickInput;
-            @LeftClickInput.performed -= instance.OnLeftClickInput;
-            @LeftClickInput.canceled -= instance.OnLeftClickInput;
-            @SpaceClickInput.started -= instance.OnSpaceClickInput;
-            @SpaceClickInput.performed -= instance.OnSpaceClickInput;
-            @SpaceClickInput.canceled -= instance.OnSpaceClickInput;
-        }
-
-        public void RemoveCallbacks(IPlayerActions instance)
-        {
-            if (m_Wrapper.m_PlayerActionsCallbackInterfaces.Remove(instance))
-                UnregisterCallbacks(instance);
-        }
-
-        public void SetCallbacks(IPlayerActions instance)
-        {
-            foreach (var item in m_Wrapper.m_PlayerActionsCallbackInterfaces)
-                UnregisterCallbacks(item);
-            m_Wrapper.m_PlayerActionsCallbackInterfaces.Clear();
-            AddCallbacks(instance);
-        }
-    }
-    public PlayerActions @Player => new PlayerActions(this);
-
     // UI
     private readonly InputActionMap m_UI;
     private List<IUIActions> m_UIActionsCallbackInterfaces = new List<IUIActions>();
@@ -347,26 +241,26 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
     }
     public UIActions @UI => new UIActions(this);
 
-    // MobileInput
-    private readonly InputActionMap m_MobileInput;
-    private List<IMobileInputActions> m_MobileInputActionsCallbackInterfaces = new List<IMobileInputActions>();
-    private readonly InputAction m_MobileInput_TouchInput;
-    private readonly InputAction m_MobileInput_DoubleTouchInput;
-    public struct MobileInputActions
+    // Mobile
+    private readonly InputActionMap m_Mobile;
+    private List<IMobileActions> m_MobileActionsCallbackInterfaces = new List<IMobileActions>();
+    private readonly InputAction m_Mobile_TouchInput;
+    private readonly InputAction m_Mobile_DoubleTouchInput;
+    public struct MobileActions
     {
         private @PlayerAction m_Wrapper;
-        public MobileInputActions(@PlayerAction wrapper) { m_Wrapper = wrapper; }
-        public InputAction @TouchInput => m_Wrapper.m_MobileInput_TouchInput;
-        public InputAction @DoubleTouchInput => m_Wrapper.m_MobileInput_DoubleTouchInput;
-        public InputActionMap Get() { return m_Wrapper.m_MobileInput; }
+        public MobileActions(@PlayerAction wrapper) { m_Wrapper = wrapper; }
+        public InputAction @TouchInput => m_Wrapper.m_Mobile_TouchInput;
+        public InputAction @DoubleTouchInput => m_Wrapper.m_Mobile_DoubleTouchInput;
+        public InputActionMap Get() { return m_Wrapper.m_Mobile; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(MobileInputActions set) { return set.Get(); }
-        public void AddCallbacks(IMobileInputActions instance)
+        public static implicit operator InputActionMap(MobileActions set) { return set.Get(); }
+        public void AddCallbacks(IMobileActions instance)
         {
-            if (instance == null || m_Wrapper.m_MobileInputActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_MobileInputActionsCallbackInterfaces.Add(instance);
+            if (instance == null || m_Wrapper.m_MobileActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_MobileActionsCallbackInterfaces.Add(instance);
             @TouchInput.started += instance.OnTouchInput;
             @TouchInput.performed += instance.OnTouchInput;
             @TouchInput.canceled += instance.OnTouchInput;
@@ -375,7 +269,7 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
             @DoubleTouchInput.canceled += instance.OnDoubleTouchInput;
         }
 
-        private void UnregisterCallbacks(IMobileInputActions instance)
+        private void UnregisterCallbacks(IMobileActions instance)
         {
             @TouchInput.started -= instance.OnTouchInput;
             @TouchInput.performed -= instance.OnTouchInput;
@@ -385,21 +279,21 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
             @DoubleTouchInput.canceled -= instance.OnDoubleTouchInput;
         }
 
-        public void RemoveCallbacks(IMobileInputActions instance)
+        public void RemoveCallbacks(IMobileActions instance)
         {
-            if (m_Wrapper.m_MobileInputActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_MobileActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
-        public void SetCallbacks(IMobileInputActions instance)
+        public void SetCallbacks(IMobileActions instance)
         {
-            foreach (var item in m_Wrapper.m_MobileInputActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_MobileActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_MobileInputActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_MobileActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
-    public MobileInputActions @MobileInput => new MobileInputActions(this);
+    public MobileActions @Mobile => new MobileActions(this);
     private int m_PCSchemeIndex = -1;
     public InputControlScheme PCScheme
     {
@@ -418,16 +312,11 @@ public partial class @PlayerAction: IInputActionCollection2, IDisposable
             return asset.controlSchemes[m_MOBILESchemeIndex];
         }
     }
-    public interface IPlayerActions
-    {
-        void OnLeftClickInput(InputAction.CallbackContext context);
-        void OnSpaceClickInput(InputAction.CallbackContext context);
-    }
     public interface IUIActions
     {
         void OnClickInput(InputAction.CallbackContext context);
     }
-    public interface IMobileInputActions
+    public interface IMobileActions
     {
         void OnTouchInput(InputAction.CallbackContext context);
         void OnDoubleTouchInput(InputAction.CallbackContext context);

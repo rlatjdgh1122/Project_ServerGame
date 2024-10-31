@@ -79,6 +79,10 @@ public class CompetitionLobbyUI : ExpansionNetworkBehaviour, ILobbyManager
     [ServerRpc]
     private void OnSucceddedEventHanlderServerRpc()
     {
+        if (!IsHost)
+        {
+            Debug.Log("클라는 시작할 수 없음");
+        }
         OnSucceddedEventHanlderClientRpc();
     }
 
@@ -158,8 +162,11 @@ public class CompetitionLobbyUI : ExpansionNetworkBehaviour, ILobbyManager
         //선택했으면 다 꺼줌
         ColorButtonList.ForEach(btn => btn.SetInteractable(false));
 
+        TurnManager.Instance.SetTurnType(SelectTurnType);
+
         //서버에 RPC날려서 모든 클라에 적용
         DataController.ColorConfirm(SelectTurnType);
+
     }
 
     private void HandleSelectedeColor(LobbyColorButton button)

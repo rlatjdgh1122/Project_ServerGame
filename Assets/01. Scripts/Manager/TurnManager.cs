@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -9,18 +10,20 @@ public enum TurnType : sbyte
     None = -1,
     Red,
     Blue,
-    Yellow,
-    Green,
+    //Yellow,
+    //Green,
     End
 }
 
 public class TurnManager : NetworkMonoSingleton<TurnManager>
 {
     public TurnType StartType = TurnType.None;
-    public bool IsMyTurn => _turnTypeNV?.Value == TurnType.None;
+    public bool IsMyTurn => _turnTypeNV?.Value == _myType;
 
     private NetworkVariable<TurnType> _turnTypeNV = new();
-    private int _turnIdx = -1;
+    private int _turnIdx = 0;
+
+    private TurnType _myType = TurnType.None;
 
     public override void OnNetworkSpawn()
     {
@@ -40,26 +43,24 @@ public class TurnManager : NetworkMonoSingleton<TurnManager>
         _turnTypeNV.OnValueChanged -= OnChangedValue;
     }
 
-    private void Update()
+    public void SetTurnType(TurnType turnType)
     {
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            OnTurnChangedNext();
-        }
-
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            GameStart();
-        }
+        _myType = turnType;
     }
 
     public void GameStart()
     {
+        Debug.Log("게임시작");
+        _turnIdx = (int)StartType;
         _turnTypeNV.Value = StartType;
+
+        OnChangedValue(StartType, StartType);
+
     }
 
     private void OnChangedValue(TurnType prevValue, TurnType newValue)
     {
+        Debug.Log($"턴 체인지 : {prevValue == TurnType.None}");
         if (prevValue == TurnType.None) return;
 
         SignalHub.OnChangedTurnEvent?.Invoke(prevValue, newValue);

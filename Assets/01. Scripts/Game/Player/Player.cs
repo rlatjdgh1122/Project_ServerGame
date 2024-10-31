@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class Player : ExpansionNetworkBehaviour, ISetupHandler
 {
+
     public void Setup(ComponentList list)
     {
-
+       
     }
 
     public void SetPostion(Transform trm)
