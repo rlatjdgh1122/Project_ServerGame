@@ -14,6 +14,6 @@ public abstract class UIElement : ExpansionMonoBehaviour
 
     private void Install()
     {
-        UIAnimator = new();
+        UIAnimator = new(this);
     }
 }
