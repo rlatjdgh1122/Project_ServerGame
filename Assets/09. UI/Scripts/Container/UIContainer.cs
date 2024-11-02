@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class UIContainer : UIElement, IUIContainer
+public class UIContainer : UIElement
 {
 
     public override void Awake()

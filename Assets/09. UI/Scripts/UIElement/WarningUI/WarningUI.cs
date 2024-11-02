@@ -7,7 +7,7 @@ public interface IUIWarningText : IUITarget
     public void ShowText(string text, float duration);
 }
 
-public class WarningUI : UIElement, IUITarget
+public class WarningUI : UIElement
 {
     [SerializeField] private float _fadeDuration = 0.3f;
     [SerializeField] private TextMeshProUGUI _warningText = null;
@@ -16,7 +16,7 @@ public class WarningUI : UIElement, IUITarget
     {
         base.Awake();
 
-        UIManager<IUITarget>.ResisterUI(this, gameObject.name);
+        //<IUITarget>.ResisterUI(this, gameObject.name);
     }
 
     public void ShowText(string text, float duration = 2f)
