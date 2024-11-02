@@ -11,48 +11,104 @@ public interface IUIPop : IUITarget
 
 public interface IUITarget
 {
-
+    public void Show();
+    public void Hide();
 }
 
-public interface IUIController
+public abstract class UIControllerBase
 {
-
+    protected abstract void Init();
 }
 
-public static class UIManager<T> where T : IUITarget
+public class UIPopController : UIControllerBase
 {
-    private static Dictionary<(Type type, string name), T> _uiTargetDatas = new();
+    private Stack<IUIPop> _uiStack = new();
+    private IUIPop _currentUI = null;
 
-    public static T GetUI(string name)
+    protected override void Init()
     {
-        var key = (typeof(T), name);
 
-        if (_uiTargetDatas.TryGetValue(key, out var ui))
-        {
-            return ui;
-
-        } //end if
-
-        Debug.LogError($"Type : [{typeof(T)}], name : [{name}]에 해당하는 UI를 찾을 수 없습니다.");
-
-        return default;
     }
 
-    public static void ResisterUI(T ui, string name)
+    public void Push(IUIPop ui)
     {
-        var key = (typeof(T), name);
-
-        if (!_uiTargetDatas.ContainsKey(key))
+        if(_currentUI != null && _currentUI == ui)
         {
-            _uiTargetDatas.Add(key, ui);
+            Debug.Log($"이미 열려있는 창입니다.");
+            return;
 
         } //end if
 
-        else
+        // 이전 화면을 숨겨준다.
+        if (_uiStack.Count > 0)
         {
-            Debug.LogError($"Type : [{typeof(T)}], name : [{name}]에 해당하는 UI가 중복되었습니다.");
+            _uiStack.Peek().Hide();
 
-        } //end else
+        } //end if
+
+        //현재 UI를 교체해준다.
+        _currentUI = ui;
+
+        _uiStack.Push(ui);
+        ui.Show();
+    }
+
+    public void Pop()
+    {
+        if (_uiStack.Count <= 0) return;
+
+        //현재창을 닫아준다.
+        IUIPop currnet = _uiStack.Pop();
+        currnet.Hide();
+        _currentUI = null;
+
+        //이전 창을 현재창으로 설정 후 보여준다.
+        _currentUI = _uiStack.Peek();
+        _currentUI.Show();
+    }
+
+    public IUIPop GetCurrentPopupUI()
+    {
+        if(_currentUI == null)
+        {
+            Debug.Log("현재 켜져있는 창이 없습니다.");
+
+        } //end if
+        return _currentUI;
+    }
+
+}
+
+
+public class UIManager : MonoSingleton<UIManager>
+{
+    private readonly Dictionary<Type, object> _controllerDatas = new();
+
+    public T GetController<T>() where T : UIControllerBase
+    {
+        if (_controllerDatas.TryGetValue(typeof(T), out object controller))
+        {
+            return (T)controller;
+        }
+
+        Debug.Log($"Type : [{typeof(T)}] 를 찾을 수 없습니다.");
+
+        return null;
+    }
+}
+
+public abstract class UIElement : ExpansionMonoBehaviour
+{
+    public UIAnimator UIAnimator = null;
+
+    public virtual void Awake()
+    {
+        Install();
+    }
+
+    private void Install()
+    {
+        UIAnimator = new(this);
     }
 }
 
@@ -101,24 +157,10 @@ public class UIAnimator
     }
 }
 
-
-public static class UIController<T> where T : IUIController
-{
-
-}
-
-public class UIPopupController : UIElement, IUIController
-{
-
-}
-
 public class GetUI : MonoBehaviour
 {
     private void Start()
     {
-        UIManager<IUIWarningText>.GetUI("wqer").ShowText("로그인을 할 수 없습니다.", 3f);
-
-        UIManager<IUIPop>.GetUI("werq").Pop();
-        //UIController<UIPopupController>.GetUI("werq").GetCurrentUI;
+        UIManager.Instance.GetController<UIPopController>().GetCurrentPopupUI();
     }
 }
